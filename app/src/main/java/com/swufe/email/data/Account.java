@@ -10,9 +10,9 @@ public class Account extends LitePalSupport {
 //    private String nickName;
     private String status;
     private String POP3HOST;
+    private int POP3PORT;
     private String SMTPHOST;
     private int SMTPPORT;
-
 
 
     public String getEmailAddress() {
@@ -53,6 +53,14 @@ public class Account extends LitePalSupport {
 
     public void setPOP3HOST(String POP3HOST) {
         this.POP3HOST = POP3HOST;
+    }
+
+    public int getPOP3PORT() {
+        return POP3PORT;
+    }
+
+    public void setPOP3PORT(int POP3PORT) {
+        this.POP3PORT = POP3PORT;
     }
 
     public String getSMTPHOST() {

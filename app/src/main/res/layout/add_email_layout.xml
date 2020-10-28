@@ -35,14 +35,37 @@
             android:hint="163/QQ/yeah邮箱等"
             android:inputType="textEmailAddress" />
 
-        <EditText
-            android:id="@+id/edit_email_password"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:ems="10"
-            android:hint="授权码"
-            android:inputType="textPassword" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_email_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:background="@color/colorTransparent"
+                android:layout_marginBottom="5dp"
+                android:ems="10"
+                android:hint="授权码"
+                android:inputType="textPassword" />
+
+            <ImageButton
+                android:id="@+id/show_code"
+                android:layout_width="39dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:srcCompat="@android:drawable/btn_dialog" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGray"
+            />
+
     </LinearLayout>
 
 
@@ -237,7 +260,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"

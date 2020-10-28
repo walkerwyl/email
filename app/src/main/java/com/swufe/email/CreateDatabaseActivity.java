@@ -40,7 +40,6 @@ public class CreateDatabaseActivity extends AppCompatActivity {
                 Account account = new Account();
                 account.setEmailAddress("wang_yu_song@yeah.net");
                 account.setEmailPassword("JGAFQZMBIWANVRCD");
-                account.setNickName("黑与白");
                 account.setStatus("2");
                 account.setPOP3HOST("pop3.yeah.net");
                 account.setSMTPHOST("smtp.yeah.net");
@@ -67,7 +66,6 @@ public class CreateDatabaseActivity extends AppCompatActivity {
                 for (Account account : accounts) {
                     Log.i(TAG, "onClick: account emailAddress=" + account.getEmailAddress() );
                     Log.i(TAG, "onClick: account emailPassword=" + account.getEmailPassword());
-                    Log.i(TAG, "onClick: account nickName=" + account.getNickName());
                     Log.i(TAG, "onClick: account status=" + account.getStatus());
                     Log.i(TAG, "onClick: account POP3HOST=" + account.getPOP3HOST());
                     Log.i(TAG, "onClick: account SMTPHOST=" + account.getSMTPHOST());
