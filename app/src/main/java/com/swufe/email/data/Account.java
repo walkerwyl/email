@@ -6,7 +6,8 @@ public class Account extends LitePalSupport {
 
     private String emailAddress;
     private String emailPassword;
-    private String nickName;
+//      用户别名全部去除
+//    private String nickName;
     private String status;
     private String POP3HOST;
     private String SMTPHOST;
@@ -30,13 +31,13 @@ public class Account extends LitePalSupport {
         this.emailPassword = emailPassword;
     }
 
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
+//    public String getNickName() {
+//        return nickName;
+//    }
+//
+//    public void setNickName(String nickName) {
+//        this.nickName = nickName;
+//    }
 
     public String getStatus() {
         return status;

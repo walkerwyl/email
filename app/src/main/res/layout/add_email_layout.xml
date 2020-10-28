@@ -27,7 +27,7 @@
             android:textSize="24sp" />
 
         <EditText
-            android:id="@+id/edit_text_email_address"
+            android:id="@+id/edit_email_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -36,7 +36,7 @@
             android:inputType="textEmailAddress" />
 
         <EditText
-            android:id="@+id/edit_text_password"
+            android:id="@+id/edit_email_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -87,7 +87,7 @@
                 android:textSize="20sp" />
 
             <EditText
-                android:id="@+id/pop3_host"
+                android:id="@+id/edit_pop3_host"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -126,7 +126,7 @@
             />
 
         <EditText
-            android:id="@+id/editTextTextPersonName3"
+            android:id="@+id/edit_pop3_port"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -177,7 +177,7 @@
                 android:textSize="20sp" />
 
             <EditText
-                android:id="@+id/text_smtp_port"
+                android:id="@+id/edit_smtp_host"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -214,7 +214,7 @@
                 android:textSize="20sp" />
 
             <EditText
-                android:id="@+id/smtp_port"
+                android:id="@+id/edit_smtp_port"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
