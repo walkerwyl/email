@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
+    // TODO: 20-10-28 添加个人功能时导致原有的侧边栏无法使用
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
