@@ -21,7 +21,8 @@ public class LoadActivity extends AppCompatActivity implements Runnable {
 
     static Handler handler;
     static Bundle bundle;
-    Account account;
+    private Account account;
+    private String emailAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +37,14 @@ public class LoadActivity extends AppCompatActivity implements Runnable {
             public void handleMessage(@NonNull Message msg) {
                 if (msg.what == 5) {
                     bundle = (Bundle) msg.obj;
+                    emailAddress = bundle.getString("email_address", "");
 
+                    Bundle bundle = new Bundle();
+                    bundle.putString("email_address", emailAddress);
+                    Log.i(TAG, "handleMessage: 获得当前用户的邮件地址并发送到MainActivity" + emailAddress);
                     Intent intent = new Intent(LoadActivity.this, MainActivity.class);
-                    startActivity(intent, bundle);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 } else if (msg.what == 6) {
                     Intent intent = new Intent(LoadActivity.this, AddEmailActivity.class);
                     startActivity(intent);

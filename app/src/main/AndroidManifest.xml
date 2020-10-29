@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddEmailActivity"></activity>
+        <activity android:name=".WriteEmailActivity"></activity>
+        <activity android:name=".AddEmailActivity" />
         <activity
             android:name=".LoadActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -22,13 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateDatabaseActivity" >
-
-        </activity>
+        <activity android:name=".CreateDatabaseActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
