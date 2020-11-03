@@ -94,6 +94,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent addEmailIntent = new Intent(MainActivity.this, AddEmailActivity.class);
                 startActivity(addEmailIntent);
                 break;
+            case R.id.action_query:
+                Intent queryIntent = new Intent(MainActivity.this, QueryLitePalActivity.class);
+                startActivity(queryIntent);
             case R.id.action_settings:
                 break;
             default:

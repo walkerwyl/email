@@ -1,5 +1,6 @@
 package com.swufe.email.ui.home;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,18 +40,12 @@ public class HomeFragment extends Fragment implements Runnable{
     String emailAddress;
     List<HashMap<String, String>> listData;
 
+    @SuppressLint("HandlerLeak")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-//        final TextView textView = root.findViewById(R.id.text_home);
-//        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
 
         Bundle bundle = getActivity().getIntent().getExtras();
         emailAddress = bundle.getString("email_address", "");

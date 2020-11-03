@@ -3,7 +3,7 @@
 <litepal>
     <dbname value="email" />
 
-    <version value="3" />
+    <version value="1" />
 
     <list>
         <mapping class="com.swufe.email.data.Account" />

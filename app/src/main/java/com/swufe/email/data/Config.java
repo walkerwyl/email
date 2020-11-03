@@ -4,10 +4,19 @@ import org.litepal.crud.LitePalSupport;
 
 public class Config extends LitePalSupport {
 //    市面上常用的邮箱配置
+    private String NAME;
     private String POP3HOST;
     private String SMTPHOST;
     private int POP3PORT;
     private int SMTPPORT;
+
+    public String getNAME() {
+        return this.NAME;
+    }
+
+    public void setNAME(String NAME) {
+        this.NAME = NAME;
+    }
 
     public String getPOP3HOST() {
         return POP3HOST;

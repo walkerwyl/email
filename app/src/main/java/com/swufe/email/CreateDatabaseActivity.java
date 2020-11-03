@@ -47,6 +47,7 @@ public class CreateDatabaseActivity extends AppCompatActivity {
 //                account.setSMTPPORT(25);
 //                account.save();
                 Config config = new Config();
+                config.setNAME("126.com");
                 config.setPOP3HOST("smtp.126.com");
                 config.setPOP3PORT(25);
                 config.setSMTPHOST("pop.126.com");
@@ -80,6 +81,7 @@ public class CreateDatabaseActivity extends AppCompatActivity {
 //                }
                 List<Config> configList = LitePal.findAll(Config.class);
                 for (Config config : configList) {
+                    Log.i(TAG, "onClick: NAME=" + config.getNAME());
                     Log.i(TAG, "onClick: SMTPHOST=" + config.getSMTPHOST());
                     Log.i(TAG, "onClick: SMTPPORT=" + config.getSMTPPORT());
                     Log.i(TAG, "onClick: POP3HOST=" + config.getPOP3HOST());

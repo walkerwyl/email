@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +52,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
     String emailBody;
 
     // TODO: 20-10-28 使用下拉列表让用户选择自己的发送邮件的邮箱帐号
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

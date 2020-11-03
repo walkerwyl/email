@@ -21,7 +21,11 @@ import android.widget.ThemedSpinnerAdapter;
 import android.widget.Toast;
 
 import com.swufe.email.data.Account;
+import com.swufe.email.data.Config;
 
+import org.litepal.LitePal;
+
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,16 +46,17 @@ public class AddEmailActivity extends AppCompatActivity implements Runnable, Vie
     EditText smtp_host;
     EditText smtp_port;
 
-    Account account;
+
     static Handler handler;
     static Bundle bundle;
+
+    String[] array;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_email_layout);
 
-        account = new Account();
 
         email_address = findViewById(R.id.edit_email_address);
         email_password = findViewById(R.id.edit_email_password);
@@ -59,6 +64,12 @@ public class AddEmailActivity extends AppCompatActivity implements Runnable, Vie
         pop3_port = findViewById(R.id.edit_pop3_port);
         smtp_host = findViewById(R.id.edit_smtp_host);
         smtp_port = findViewById(R.id.edit_smtp_port);
+
+        Button submit = findViewById(R.id.btn_submit);
+        submit.setOnClickListener(AddEmailActivity.this);
+
+        ImageButton showCode = findViewById(R.id.show_code);
+        showCode.setOnClickListener(AddEmailActivity.this);
 
         email_address.addTextChangedListener(new TextWatcher() {
             //        https://blog.csdn.net/erweidetaiyangxi/article/details/78988388
@@ -74,6 +85,7 @@ public class AddEmailActivity extends AppCompatActivity implements Runnable, Vie
 
             }
 
+            @SuppressLint("HandlerLeak")
             @Override
             public void afterTextChanged(Editable editable) {
                 String emailAddress = email_address.getText().toString();
@@ -81,48 +93,44 @@ public class AddEmailActivity extends AppCompatActivity implements Runnable, Vie
                     Toast.makeText(AddEmailActivity.this, "邮箱不符合标准", Toast.LENGTH_SHORT).show();
                 }
                 else {
+//                    邮箱有效时截取后半段自动填写服务器地址及端口
+                    array = emailAddress.split("@");
 
+                    Thread thread = new Thread(AddEmailActivity.this);
+                    thread.start();
+
+                    handler = new Handler() {
+                        @Override
+                        public void handleMessage(@NonNull Message msg) {
+                            if (msg.what == 7) {
+                                List<Config> configList = (List<Config>) msg.obj;
+                                for (Config config : configList) {
+                                    if (array[1].equals(config.getNAME())) {
+                                        // TODO: 20-11-3 端口号是否完全变成字符串类型, 存在数值与字符串间的转换 
+                                        pop3_host.setText(config.getPOP3HOST());
+                                        pop3_port.setText(""+config.getPOP3PORT());
+                                        smtp_host.setText(config.getSMTPHOST());
+                                        smtp_port.setText(""+config.getSMTPPORT());
+                                    }
+                                }
+                            }
+                            super.handleMessage(msg);
+                        }
+                    };
                 }
             }
         });
-
-        Button submit = findViewById(R.id.btn_submit);
-        submit.setOnClickListener(AddEmailActivity.this);
-
-        ImageButton showCode = findViewById(R.id.show_code);
-        showCode.setOnClickListener(AddEmailActivity.this);
 
     }
 
     @Override
     public void run() {
-//        当且仅当用户填写完毕时,进行相关的判断
-        if (isValid(email_address, email_password,
-                pop3_host, pop3_port, smtp_host, smtp_port)) {
-            account.setEmailAddress(email_address.getText().toString());
-            account.setEmailPassword(email_password.getText().toString());
-            account.setPOP3HOST(pop3_host.getText().toString());
-//            pop3_port是数字
-            account.setPOP3PORT(Integer.parseInt(pop3_port.getText().toString()));
-            account.setSMTPHOST(smtp_host.getText().toString());
-//            smtp_port是数字
-            account.setSMTPPORT(Integer.parseInt(smtp_port.getText().toString()));
+//        从数据库中取出数据并返回处理
+        List<Config> configList = LitePal.findAll(Config.class);
 
-            if (isValid(account)) {
-//                验证邮箱的有效性后返回主线程并写入数据库中
-//                邮箱配置有效
-                account.setStatus("2");
-                // TODO: 20-10-28 对于线程返回的状态值进行统一的管理
-                Message msg = handler.obtainMessage(7);
-                msg.obj = account;
-                handler.sendMessage(msg);
-            } else {
-//                邮箱配置无效舍弃,直接返回
-                Message msg = handler.obtainMessage(8);
-                handler.sendMessage(msg);
-            }
-
-        }
+        Message msg = handler.obtainMessage(7);
+        msg.obj = configList;
+        handler.sendMessage(msg);
     }
 
     private boolean isValid(EditText... editTexts) {
@@ -132,16 +140,9 @@ public class AddEmailActivity extends AppCompatActivity implements Runnable, Vie
         return true;
     }
 
-    private boolean isValid(Account account) {
-//        使用用户填写的信息进行连接操作若操作成功则允许向数据库中填写
-//        否则使用Toast提示用户信息出错
-
-        return true;
-    }
-
     private boolean validMail (String source) {
 //        利用正则表达式对字符串进行判断,若符合一般标准且没有多于的字符,则返回true
-        String regex = "[a-zA-z.[0-9]]*@[a-zA-z[0-9]]*\\.com";
+        String regex = "[a-zA-z.[0-9]]*@[a-zA-z[0-9]]*\\.(com|cn|net)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(source);
         return matcher.find() && source.equals(matcher.group());
@@ -152,31 +153,32 @@ public class AddEmailActivity extends AppCompatActivity implements Runnable, Vie
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_submit:
-                Thread thread = new Thread(AddEmailActivity.this);
-                thread.start();
+//                点击按钮直接跳转到ManagerActivity活动中,处理相关的数据
+                if (isValid(email_address, email_password,
+                        pop3_host, pop3_port, smtp_host, smtp_port)
+                    && validMail(email_address.getText().toString())) {
+                    String emailAddress = email_address.getText().toString();
+                    String emailPassword = email_password.getText().toString();
+                    String pop3Host = pop3_host.getText().toString();
+                    int pop3Port = Integer.parseInt(pop3_port.getText().toString());
+                    String smtpHost = smtp_host.getText().toString();
+                    int smtpPort = Integer.parseInt(smtp_port.getText().toString());
 
-                handler = new Handler() {
-                    @Override
-                    public void handleMessage(@NonNull Message msg) {
-                        if (msg.what == 7) {
-                            account = (Account) msg.obj;
-                            account.save();
-
-                            String emailAddress = account.getEmailAddress();
-                            Bundle bundle = new Bundle();
-                            bundle.putString("email_address", emailAddress);
-                            Log.i(TAG, "handleMessage: email_address=" + emailAddress);
-
-                            Intent intent = new Intent(AddEmailActivity.this, MainActivity.class);
-                            startActivity(intent, bundle);
-                        } else if (msg.what == 8) {
-
-                        }
-                        super.handleMessage(msg);
-                    }
-                };
+                    Intent intent = new Intent(AddEmailActivity.this, ManagerActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("option", "add_email");
+                    bundle.putString("email_address", emailAddress);
+                    bundle.putString("email_password", emailPassword);
+                    bundle.putString("pop3_host", pop3Host);
+                    bundle.putInt("pop3_port", pop3Port);
+                    bundle.putString("smtp_host", smtpHost);
+                    bundle.putInt("smtp_port", smtpPort);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
                 break;
             case R.id.show_code:
+//                用户调节密码的可见性
                 if (email_password.getTransformationMethod() == HideReturnsTransformationMethod.getInstance()) {
                     email_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 } else {

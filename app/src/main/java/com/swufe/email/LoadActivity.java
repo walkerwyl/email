@@ -50,7 +50,7 @@ public class LoadActivity extends AppCompatActivity implements Runnable {
                     startActivity(intent);
 
                 } else if (msg.what == 6) {
-                    Intent intent = new Intent(LoadActivity.this, AddEmailActivity.class);
+                    Intent intent = new Intent(LoadActivity.this, InitialDatabaseActivity.class);
                     startActivity(intent);
                 }
                 super.handleMessage(msg);

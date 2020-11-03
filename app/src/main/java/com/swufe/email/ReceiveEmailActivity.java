@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Button;
 
 import com.swufe.email.data.Account;
 import com.swufe.email.data.MyMessage;
@@ -42,6 +43,8 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
 
         handler = new Handler() {
         };
+
+
     }
 
     @Override
@@ -117,7 +120,6 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
 //                接受数据时同时对数据进行存储
 //                如何避免重复插入相同的数据
             }
-//            Message message = messages[5];
             
 
             folder.close(false);
@@ -132,6 +134,12 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
             Log.i(TAG, "run: IOException" + e);
         }
 
+//        本邮箱的邮件全部存储之后, 转向展示页面即MainActivity
+        Intent intent1 = new Intent(ReceiveEmailActivity.this, MainActivity.class);
+        Bundle bundle1 = new Bundle();
+        bundle.putString("email_address", emailAddress);
+        intent1.putExtras(bundle1);
+        startActivity(intent1);
 
     }
 
@@ -140,7 +148,7 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
 //        https://blog.csdn.net/xujinsmile/article/details/8703622
 //        显示时依照一定的顺序对邮箱是否符合进行判断, 如果其中一个判断通过则采用最先通过者作为显示的发信人
 //        进行存储
-        String regex = "[a-zA-z\\.[0-9]]*@[a-zA-z[0-9]]*\\.com";
+        String regex = "[a-zA-z\\.[0-9]]*@[a-zA-z[0-9]]*\\.(com|cn|net)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(source);
         String mail;
@@ -153,7 +161,7 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
 
     private boolean validMail (String source) {
 //        利用正则表达式对字符串进行判断,若符合一般标准且没有多于的字符,则返回true
-        String regex = "[a-zA-z.[0-9]]*@[a-zA-z[0-9]]*\\.com";
+        String regex = "[a-zA-z.[0-9]]*@[a-zA-z[0-9]]*\\.(com|cn|net)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(source);
         return matcher.find() && source.equals(matcher.group());

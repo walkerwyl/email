@@ -4,6 +4,8 @@ SMTPPORT 25
 POP3HOST pop.163.com
 POP3PORT 110
 
+邮箱帐号: wang_yu_song@yeah.net
+授权码: JGAFQZMBIWANVRCD
 
 yeah
 SMTPHOST smtp.yeah.net
