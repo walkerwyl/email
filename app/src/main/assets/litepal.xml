@@ -2,9 +2,10 @@
 <litepal>
     <dbname value="email"></dbname>
 
-    <version value="1"></version>
+    <version value="2"></version>
 
     <list>
         <mapping class="com.swufe.email.data.Account"></mapping>
+        <mapping class="com.swufe.email.data.MyMessage"></mapping>
     </list>
 </litepal>
