@@ -46,8 +46,13 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Bundle bundle = new Bundle();
+                bundle.putString("email_address", emailAddress);
+                Intent writeEmailIntent = new Intent(MainActivity.this, WriteEmailActivity.class);
+                writeEmailIntent.putExtras(bundle);
+                startActivity(writeEmailIntent);
             }
         });
 
