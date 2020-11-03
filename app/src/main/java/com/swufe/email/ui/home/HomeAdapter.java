@@ -45,4 +45,6 @@ public class HomeAdapter extends ArrayAdapter {
 
         return itemView;
     }
+
+//    使用方法转换, 实际的ItemDate
 }

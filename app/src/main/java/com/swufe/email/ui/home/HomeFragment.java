@@ -1,6 +1,7 @@
 package com.swufe.email.ui.home;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,6 +20,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.swufe.email.MainActivity;
+import com.swufe.email.MessageDetailActivity;
 import com.swufe.email.R;
 import com.swufe.email.data.MyMessage;
 
@@ -27,7 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class HomeFragment extends Fragment implements Runnable{
+public class HomeFragment extends Fragment implements Runnable, AdapterView.OnItemClickListener {
 
     private static final String TAG = "HomeFragment";
 
@@ -66,6 +69,7 @@ public class HomeFragment extends Fragment implements Runnable{
                             R.layout.list_item,
                             listData);
                     listViewINBOX.setAdapter(homeAdapter);
+                    listViewINBOX.setOnItemClickListener(HomeFragment.this);
                 }
                 super.handleMessage(msg);
             }
@@ -93,5 +97,31 @@ public class HomeFragment extends Fragment implements Runnable{
         Message msg = handler.obtainMessage(6);
         msg.obj = listData;
         handler.sendMessage(msg);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        TextView textSubject = view.findViewById(R.id.text_subject);
+        TextView textFrom = view.findViewById(R.id.text_from);
+        TextView textDate = view.findViewById(R.id.text_date);
+
+        String subjectString = textSubject.getText().toString();
+        String fromString = textFrom.getText().toString();
+        String dateString = textDate.getText().toString();
+
+        Log.i(TAG, "onItemClick: " + subjectString);
+        Log.i(TAG, "onItemClick: " + fromString);
+        Log.i(TAG, "onItemClick: " + dateString);
+
+//        不知道这样写是否可以
+        Intent intent = new Intent(getContext(), MessageDetailActivity.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("ItemSubject", subjectString);
+        bundle.putString("ItemFrom", fromString);
+        bundle.putString("ItemDate", dateString);
+
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }
