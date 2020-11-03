@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -16,8 +18,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ThemedSpinnerAdapter;
+import android.widget.Toast;
 
 import com.swufe.email.data.Account;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddEmailActivity extends AppCompatActivity implements Runnable, View.OnClickListener {
 
@@ -25,7 +31,6 @@ public class AddEmailActivity extends AppCompatActivity implements Runnable, Vie
 
 //     TODO: 20-10-28 准确保存用户输入的数据到数据库中没有问题
 //      问题在于:
-//      1. 验证用户输入的有效性
 //      2. 若用户输入错误时,提示用户重新输入(不指明可能的问题?)
 //      3. 前提条件,用户输入的数据不存在
 //        对于LitePal数据库的一些操作的判断需要更复杂的一些查询语句
@@ -54,6 +59,32 @@ public class AddEmailActivity extends AppCompatActivity implements Runnable, Vie
         pop3_port = findViewById(R.id.edit_pop3_port);
         smtp_host = findViewById(R.id.edit_smtp_host);
         smtp_port = findViewById(R.id.edit_smtp_port);
+
+        email_address.addTextChangedListener(new TextWatcher() {
+            //        https://blog.csdn.net/erweidetaiyangxi/article/details/78988388
+            //        对用户输入的邮箱地址进行监听,当用户结束输入时自动判断
+            //        1. 地址是否合法 2. 该地址对应的邮箱配置是否存储在数据库中
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String emailAddress = email_address.getText().toString();
+                if (!validMail(emailAddress)) {
+                    Toast.makeText(AddEmailActivity.this, "邮箱不符合标准", Toast.LENGTH_SHORT).show();
+                }
+                else {
+
+                }
+            }
+        });
 
         Button submit = findViewById(R.id.btn_submit);
         submit.setOnClickListener(AddEmailActivity.this);
@@ -102,10 +133,18 @@ public class AddEmailActivity extends AppCompatActivity implements Runnable, Vie
     }
 
     private boolean isValid(Account account) {
-//        验证邮箱帐号的有效性
-//        现在做不到?
+//        使用用户填写的信息进行连接操作若操作成功则允许向数据库中填写
+//        否则使用Toast提示用户信息出错
 
         return true;
+    }
+
+    private boolean validMail (String source) {
+//        利用正则表达式对字符串进行判断,若符合一般标准且没有多于的字符,则返回true
+        String regex = "[a-zA-z.[0-9]]*@[a-zA-z[0-9]]*\\.com";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(source);
+        return matcher.find() && source.equals(matcher.group());
     }
 
     @SuppressLint("HandlerLeak")

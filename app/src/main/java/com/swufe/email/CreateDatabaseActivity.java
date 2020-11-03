@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.swufe.email.data.Account;
+import com.swufe.email.data.Config;
 
 import org.litepal.LitePal;
 import org.litepal.tablemanager.Connector;
@@ -37,14 +38,20 @@ public class CreateDatabaseActivity extends AppCompatActivity {
         addData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Account account = new Account();
-                account.setEmailAddress("wang_yu_song@yeah.net");
-                account.setEmailPassword("JGAFQZMBIWANVRCD");
-                account.setStatus("2");
-                account.setPOP3HOST("pop3.yeah.net");
-                account.setSMTPHOST("smtp.yeah.net");
-                account.setSMTPPORT(25);
-                account.save();
+//                Account account = new Account();
+//                account.setEmailAddress("wang_yu_song@yeah.net");
+//                account.setEmailPassword("JGAFQZMBIWANVRCD");
+//                account.setStatus("2");
+//                account.setPOP3HOST("pop3.yeah.net");
+//                account.setSMTPHOST("smtp.yeah.net");
+//                account.setSMTPPORT(25);
+//                account.save();
+                Config config = new Config();
+                config.setPOP3HOST("smtp.126.com");
+                config.setPOP3PORT(25);
+                config.setSMTPHOST("pop.126.com");
+                config.setSMTPPORT(110);
+                config.save();
                 Toast.makeText(CreateDatabaseActivity.this,"数据库可能插入一条数据", Toast.LENGTH_LONG).show();
             }
         });
@@ -62,14 +69,21 @@ public class CreateDatabaseActivity extends AppCompatActivity {
         queryData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Account> accounts = LitePal.findAll(Account.class);
-                for (Account account : accounts) {
-                    Log.i(TAG, "onClick: account emailAddress=" + account.getEmailAddress() );
-                    Log.i(TAG, "onClick: account emailPassword=" + account.getEmailPassword());
-                    Log.i(TAG, "onClick: account status=" + account.getStatus());
-                    Log.i(TAG, "onClick: account POP3HOST=" + account.getPOP3HOST());
-                    Log.i(TAG, "onClick: account SMTPHOST=" + account.getSMTPHOST());
-                    Log.i(TAG, "onClick: account SMTPPORT=" + account.getSMTPPORT());
+//                List<Account> accounts = LitePal.findAll(Account.class);
+//                for (Account account : accounts) {
+//                    Log.i(TAG, "onClick: account emailAddress=" + account.getEmailAddress() );
+//                    Log.i(TAG, "onClick: account emailPassword=" + account.getEmailPassword());
+//                    Log.i(TAG, "onClick: account status=" + account.getStatus());
+//                    Log.i(TAG, "onClick: account POP3HOST=" + account.getPOP3HOST());
+//                    Log.i(TAG, "onClick: account SMTPHOST=" + account.getSMTPHOST());
+//                    Log.i(TAG, "onClick: account SMTPPORT=" + account.getSMTPPORT());
+//                }
+                List<Config> configList = LitePal.findAll(Config.class);
+                for (Config config : configList) {
+                    Log.i(TAG, "onClick: SMTPHOST=" + config.getSMTPHOST());
+                    Log.i(TAG, "onClick: SMTPPORT=" + config.getSMTPPORT());
+                    Log.i(TAG, "onClick: POP3HOST=" + config.getPOP3HOST());
+                    Log.i(TAG, "onClick: POP3PORT=" + config.getPOP3PORT());
                 }
             }
         });

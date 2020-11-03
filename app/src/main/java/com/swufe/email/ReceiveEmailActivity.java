@@ -153,10 +153,9 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
 
     private boolean validMail (String source) {
 //        利用正则表达式对字符串进行判断,若符合一般标准且没有多于的字符,则返回true
-        String regex = "[a-zA-z\\.[0-9]]*@[a-zA-z[0-9]]*\\.com";
+        String regex = "[a-zA-z.[0-9]]*@[a-zA-z[0-9]]*\\.com";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(source);
-        if (matcher.find() && source.equals(matcher.group())) return true;
-        else return false;
+        return matcher.find() && source.equals(matcher.group());
     }
 }

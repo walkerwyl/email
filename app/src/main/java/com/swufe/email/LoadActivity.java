@@ -3,6 +3,7 @@ package com.swufe.email;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,9 +22,9 @@ public class LoadActivity extends AppCompatActivity implements Runnable {
 
     static Handler handler;
     static Bundle bundle;
-    private Account account;
-    private String emailAddress;
+    public String emailAddress;
 
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,7 @@ public class LoadActivity extends AppCompatActivity implements Runnable {
 //                    Intent intent = new Intent(LoadActivity.this, ReceiveEmailActivity.class);
                     intent.putExtras(bundle);
                     startActivity(intent);
+
                 } else if (msg.what == 6) {
                     Intent intent = new Intent(LoadActivity.this, AddEmailActivity.class);
                     startActivity(intent);
@@ -59,7 +61,7 @@ public class LoadActivity extends AppCompatActivity implements Runnable {
 
     @Override
     public void run() {
-        // TODO: 20-10-28 没有进行相关的错误处理
+//        后续队accounts的大小进行判断, 若没有可用的帐号则直接跳转到新增邮箱界面
         List<Account> accounts = LitePal.select("emailAddress")
                 .where("status = ?", "2")
                 .limit(1)

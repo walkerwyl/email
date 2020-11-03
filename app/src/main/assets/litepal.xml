@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!--LitePal数据库与相关的类进行关联-->
 <litepal>
-    <dbname value="email"></dbname>
+    <dbname value="email" />
 
-    <version value="2"></version>
+    <version value="3" />
 
     <list>
-        <mapping class="com.swufe.email.data.Account"></mapping>
-        <mapping class="com.swufe.email.data.MyMessage"></mapping>
+        <mapping class="com.swufe.email.data.Account" />
+        <mapping class="com.swufe.email.data.MyMessage" />
+        <mapping class="com.swufe.email.data.Config" />
     </list>
 </litepal>
