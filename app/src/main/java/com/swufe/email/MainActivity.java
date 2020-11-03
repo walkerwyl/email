@@ -10,6 +10,7 @@ import android.view.Menu;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.swufe.email.ui.home.HomeFragment;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(writeEmailIntent);
             }
         });
+
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

@@ -12,15 +12,16 @@ import androidx.annotation.Nullable;
 
 import com.swufe.email.R;
 
-import java.util.ArrayList;
+
 import java.util.HashMap;
+import java.util.List;
 
 public class HomeAdapter extends ArrayAdapter {
     private static final String TAG = "HomeAdapter";
 
     public HomeAdapter(Context context,
                        int resource,
-                       ArrayList<HashMap<String, String>> list) {
+                       List<HashMap<String, String>> list) {
         super(context, resource, list);
     }
 
@@ -35,10 +36,12 @@ public class HomeAdapter extends ArrayAdapter {
         }
         HashMap<String, String> map = (HashMap<String, String>) getItem(position);
         TextView textSubject = itemView.findViewById(R.id.text_subject);
-        TextView texyDate = itemView.findViewById(R.id.text_date);
+        TextView textDate = itemView.findViewById(R.id.text_date);
+        TextView textFrom = itemView.findViewById(R.id.text_from);
 
         textSubject.setText(map.get("ItemSubject"));
-        texyDate.setText(map.get("ItemDate"));
+        textDate.setText(map.get("ItemDate"));
+        textFrom.setText(map.get("ItemFrom"));
 
         return itemView;
     }
