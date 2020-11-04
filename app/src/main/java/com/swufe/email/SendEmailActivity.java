@@ -14,6 +14,7 @@ import com.teprinciple.mailsender.MailSender;
 
 import org.litepal.LitePal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class SendEmailActivity extends AppCompatActivity implements Runnable{
     String emailSubject;
     String emailBody;
     ArrayList<String> targetAddressList;
+    ArrayList<String> filePathArrayList;
+    ArrayList<File> fileArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class SendEmailActivity extends AppCompatActivity implements Runnable{
         targetAddress = bundle.getString("target_address", "");
         emailSubject = bundle.getString("email_subject", "");
         emailBody = bundle.getString("email_body", "");
+        filePathArrayList = bundle.getStringArrayList("filePathArrayList");
         Log.i(TAG, "onCreate: emailAddress" + emailAddress);
         Log.i(TAG, "onCreate: targetAddress" + targetAddress);
         Log.i(TAG, "onCreate: emailSubject" + emailSubject);
@@ -48,6 +52,12 @@ public class SendEmailActivity extends AppCompatActivity implements Runnable{
 
         targetAddressList = new ArrayList<>();
         targetAddressList = splitTargetAddress(targetAddress);
+
+        fileArrayList = new ArrayList<>();
+        for (String filePath : filePathArrayList) {
+            File file = new File(filePath);
+            fileArrayList.add(file);
+        }
 
         for (String item : targetAddressList) {
             Log.i(TAG, "onCreate: targetAddress item=" + item);
@@ -93,6 +103,9 @@ public class SendEmailActivity extends AppCompatActivity implements Runnable{
             mail.setToAddress(targetAddressList);
             mail.setSubject(emailSubject);
             mail.setContent(emailBody);
+            if (filePathArrayList.size() != 0) {
+                mail.setAttachFiles(fileArrayList);
+            }
             Log.i(TAG, "run: 邮件发送成功");
 
             // 发送邮箱

@@ -5,10 +5,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
@@ -25,6 +29,13 @@ import com.swufe.email.data.Account;
 
 import org.litepal.LitePal;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +53,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
 
     ImageButton addTargetAddress;
     ImageButton sendEmailButton;
+    ImageButton attachFileButton;
     EditText editTargetAddress;
     EditText editEmailSubject;
     TextInputEditText textInputEmailBody;
@@ -50,6 +62,8 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
     String targetAddress;
     String emailSubject;
     String emailBody;
+    ArrayList<String> filePathArrayList;//传递给发送邮件活动
+    ArrayList<String> fileNameArrayList;//展示附件列表数据源
 
     // TODO: 20-10-28 使用下拉列表让用户选择自己的发送邮件的邮箱帐号
     @SuppressLint("HandlerLeak")
@@ -63,6 +77,9 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
         emailAddress = bundle.getString("email_address", "");
         Log.i(TAG, "onCreate: 写邮件页面获得当前用户身份emailAddress=" + emailAddress);
 
+        fileNameArrayList = new ArrayList<>();
+        filePathArrayList = new ArrayList<>();
+
         editTargetAddress = findViewById(R.id.edit_target_address);
         editEmailSubject = findViewById(R.id.edit_email_subject);
         textInputEmailBody = findViewById(R.id.text_input_emdil_body);
@@ -73,11 +90,8 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
         sendEmailButton = findViewById(R.id.btn_send);
         sendEmailButton.setOnClickListener(WriteEmailActivity.this);
 
-//        收集用户的邮件数据
-//        targetAddress = editTargetAddress.getText().toString();
-
-
-
+        attachFileButton = findViewById(R.id.btn_attach_file);
+        attachFileButton.setOnClickListener(WriteEmailActivity.this);
 
         Thread thread = new Thread(WriteEmailActivity.this);
         thread.start();
@@ -116,19 +130,21 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                 emailSubject = editEmailSubject.getText().toString();
                 emailBody = textInputEmailBody.getText().toString();
 
-//                验证数据是否完备
-//                邮箱格式是否正确
-//                targetAddress是否格式正确
-
-
                 Bundle sendEmailBundle = new Bundle();
                 sendEmailBundle.putString("email_address", emailAddress);
                 sendEmailBundle.putString("target_address", targetAddress);
                 sendEmailBundle.putString("email_subject", emailSubject);
                 sendEmailBundle.putString("email_body", emailBody);
+                sendEmailBundle.putStringArrayList("filePathArrayList", filePathArrayList);
                 Intent sendEmailIntent = new Intent(WriteEmailActivity.this, SendEmailActivity.class);
                 sendEmailIntent.putExtras(sendEmailBundle);
                 startActivity(sendEmailIntent);
+                break;
+            case R.id.btn_attach_file:
+                Intent attachIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                attachIntent.setType("*/*");//无类型限制
+                attachIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(attachIntent, 2);
                 break;
             default:
                 break;
@@ -142,6 +158,21 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
             Bundle bundle = data.getExtras();
             String targetAddressString = bundle.getString("targer_address_list", "");
             editTargetAddress.setText(targetAddressString);
+        } else if (requestCode == 2 &&resultCode == Activity.RESULT_OK) {
+                Uri uri = data.getData();
+                Log.i(TAG, "onActivityResult: uri=" + uri);
+                Log.i(TAG, "onActivityResult: uri.getPath=" + uri.getPath());
+                Log.i(TAG, "onActivityResult: " + getFilePathFromURI(this, uri));
+                filePathArrayList.add(getFilePathFromURI(this, uri));
+            Log.i(TAG, "onActivityResult: filePath=" + getFilePathFromURI(this, uri));
+            Log.i(TAG, "onActivityResult: filePathArrayList size=" + filePathArrayList.size());
+                File file = new File(getFilePathFromURI(this,uri));
+                Log.i(TAG, "onActivityResult: fileName=" + file.getName());
+                fileNameArrayList.add(file.getName());
+            Log.i(TAG, "onActivityResult: fileNameArrayList size=" + fileNameArrayList.size());
+//            在更新的同时对附件列表进行更新,使用默认的listview和adapter进行处理
+        } else {
+            Log.i(TAG, "onActivityResult: 出错");
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -158,5 +189,68 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
         Message msg = handler.obtainMessage(9);
         msg.obj = emailAddressList;
         handler.sendMessage(msg);
+    }
+
+
+    //获取拍照和选取的图片的绝对路径
+    public static String getFilePathFromURI(Context context, Uri contentUri) {
+        File rootDataDir = context.getExternalFilesDir(null);
+//        MyApplication.getMyContext().getExternalFilesDir(null).getPath();
+        String fileName = getFileName(contentUri);
+        if (!TextUtils.isEmpty(fileName)) {
+            File copyFile = new File(rootDataDir + File.separator + fileName);
+            copyFile(context, contentUri, copyFile);
+            return copyFile.getAbsolutePath();
+        }
+        return fileName;
+    }
+
+    public static String getFileName(Uri uri) {
+        if (uri == null) return null;
+        String fileName = null;
+        String path = uri.getPath();
+        int cut = path.lastIndexOf('/');
+        if (cut != -1) {
+            fileName = path.substring(cut + 1);
+        }
+        return fileName;
+    }
+
+    public static void copyFile(Context context, Uri srcUri, File dstFile) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(srcUri);
+            if (inputStream == null) return;
+            OutputStream outputStream = new FileOutputStream(dstFile);
+            copyStream(inputStream, outputStream);
+            inputStream.close();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int copyStream(InputStream input, OutputStream output) throws Exception, IOException {
+        final int BUFFER_SIZE = 1024 * 2;
+        byte[] buffer = new byte[BUFFER_SIZE];
+        BufferedInputStream in = new BufferedInputStream(input, BUFFER_SIZE);
+        BufferedOutputStream out = new BufferedOutputStream(output, BUFFER_SIZE);
+        int count = 0, n = 0;
+        try {
+            while ((n = in.read(buffer, 0, BUFFER_SIZE)) != -1) {
+                out.write(buffer, 0, n);
+                count += n;
+            }
+            out.flush();
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+            }
+            try {
+                in.close();
+            } catch (IOException e) {
+            }
+        }
+        return count;
     }
 }
