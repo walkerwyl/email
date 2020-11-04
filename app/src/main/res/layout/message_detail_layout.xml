@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     android:orientation="vertical"
     tools:context=".MessageDetailActivity">
 
@@ -11,24 +12,58 @@
         android:id="@+id/text_detail_subject"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_marginBottom="5dp"
+        android:text="TextView"
+        android:textSize="24sp"
+        />
 
-    <TextView
-        android:id="@+id/text_detail_from"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/colorGray"
+        />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:orientation="horizontal"
+        android:layout_marginBottom="5dp"
+        >
 
-    <TextView
-        android:id="@+id/text_detail_date"
+        <TextView
+            android:id="@+id/text_detail_from"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TextView"
+            android:textSize="16sp"
+            />
+
+        <TextView
+            android:id="@+id/text_detail_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="TextView"
+            android:textSize="16sp"
+            />
+
+    </LinearLayout>
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/colorGray"
+        />
 
     <TextView
         android:id="@+id/text_detail_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textSize="16sp"
+        />
 
 </LinearLayout>

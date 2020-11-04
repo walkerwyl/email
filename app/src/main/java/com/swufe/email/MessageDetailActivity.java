@@ -8,13 +8,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.swufe.email.data.GMTDate;
 import com.swufe.email.data.MyMessage;
 
 import org.litepal.LitePal;
 
+import java.util.Date;
 import java.util.List;
 
 public class MessageDetailActivity extends AppCompatActivity implements Runnable{
@@ -53,6 +56,7 @@ public class MessageDetailActivity extends AppCompatActivity implements Runnable
 
         detailSubject.setText(subjectString);
         detailFrom.setText(fromString);
+//        日期始终只显示需要的部分
         detailDate.setText(dateString);
 
 
@@ -75,7 +79,7 @@ public class MessageDetailActivity extends AppCompatActivity implements Runnable
     @Override
     public void run() {
 //        根据提供的信息查询, 返回最后显示在界面上
-        List<MyMessage> myMessageList = LitePal.where("sentDate = ?", dateString)
+        List<MyMessage> myMessageList = LitePal.where("subject = ? and sentDate like ?", subjectString, dateString + "%")
                 .limit(1)
                 .find(MyMessage.class);
         MyMessage myMessage = myMessageList.get(0);

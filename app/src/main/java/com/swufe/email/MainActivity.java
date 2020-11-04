@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
+        assert bundle != null;
         emailAddress = bundle.getString("email_address", "");
         Log.i(TAG, "onCreate: 获得当前用户的身份emailAddress=" + emailAddress);
 

@@ -72,13 +72,5 @@ public class MyMessage extends LitePalSupport {
         this.messageNumber = messageNumber;
     }
 
-    public int dateJudgment (String sentDate) throws ParseException {
-//        判断该邮件是否今天发送
-//        是, 则显示具体的时间
-//        否, 则显示大致范围, 若在两日之内则, 今天(具体时间), 昨天, 星期日
-//        其余则直接显示日期
-        GMTDate gmtDate = new GMTDate(sentDate);
-        Date date = gmtDate.toCSTDate();
-        return 0;
-    }
+
 }

@@ -40,7 +40,7 @@ public class HomeAdapter extends ArrayAdapter {
         TextView textFrom = itemView.findViewById(R.id.text_from);
 
         textSubject.setText(map.get("ItemSubject"));
-        textDate.setText(map.get("ItemDate"));
+        textDate.setText(map.get("ItemDate").substring(0, 10));
         textFrom.setText(map.get("ItemFrom"));
 
         return itemView;
