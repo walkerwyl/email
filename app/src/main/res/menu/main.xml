@@ -14,16 +14,16 @@
         android:title="添加邮箱"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_query"
-        android:orderInCategory="100"
-        android:title="查询数据库"
-        app:showAsAction="never" />
+<!--    <item-->
+<!--        android:id="@+id/action_query"-->
+<!--        android:orderInCategory="100"-->
+<!--        android:title="查询数据库"-->
+<!--        app:showAsAction="never" />-->
 
 
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+<!--    <item-->
+<!--        android:id="@+id/action_settings"-->
+<!--        android:orderInCategory="100"-->
+<!--        android:title="@string/action_settings"-->
+<!--        app:showAsAction="never" />-->
 </menu>

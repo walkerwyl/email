@@ -8,6 +8,10 @@ import java.util.Date;
 public class MyMessage extends LitePalSupport {
 //    一开始只完成文本文件的传输和展示
 //    只考虑文本文件
+    String status;
+    //用于分类 0 邮箱中的邮件
+    //1 草稿箱中的邮件
+    //2 已发送的邮件存储
     String subject;
     String from;
     String replyTo;
@@ -15,6 +19,14 @@ public class MyMessage extends LitePalSupport {
     String contentType;
     String content;
     int messageNumber;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getSubject() {
         return subject;

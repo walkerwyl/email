@@ -81,7 +81,8 @@ public class HomeFragment extends Fragment implements Runnable, AdapterView.OnIt
     @Override
     public void run() {
         List<HashMap<String, String>> listData = new ArrayList<>();
-        List<MyMessage> myMessageList = LitePal.findAll(MyMessage.class);
+        List<MyMessage> myMessageList = LitePal.where("status = ?", "0")
+                .find(MyMessage.class);
 
         for (MyMessage myMessage : myMessageList) {
             HashMap<String, String> map = new HashMap<>();

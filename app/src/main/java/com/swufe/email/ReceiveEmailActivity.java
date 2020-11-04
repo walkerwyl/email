@@ -1,7 +1,9 @@
 package com.swufe.email;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,7 +34,12 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
     private static final String TAG = "ReceiveEmailActivity";
 
     static Handler handler;
+    static Intent intent;
+    static Bundle bundle;
 
+    String emailAddress;
+
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +49,17 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
         t.start();
 
         handler = new Handler() {
+            @Override
+            public void handleMessage(@NonNull android.os.Message msg) {
+                if (msg.what == 7) {
+                    //        本邮箱的邮件全部存储之后, 转向展示页面即MainActivity
+                    intent = new Intent(ReceiveEmailActivity.this, MainActivity.class);
+                    bundle = new Bundle();
+                    bundle.putString("email_address", emailAddress);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            }
         };
 
 
@@ -54,7 +72,7 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
-        String emailAddress = bundle.getString("email_address", "");
+        emailAddress = bundle.getString("email_address", "");
 
 //        根据条件访问数据库获得当前用户对应的account对象
         List<Account> accounts = LitePal.where("emailAddress = ?", emailAddress)
@@ -92,6 +110,7 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
 //                查找需要的部分存储在数据库中, 每次链减进行检查, 当messages的大小发生变化时
 //                便主动队数据库进行更新操作(默认用户为了获得最新的邮箱会进行重新登录刷新界面操作)
                 MyMessage myMessage = new MyMessage();
+                myMessage.setStatus("0");
                 myMessage.setSubject(message.getSubject());
 
                 Log.i(TAG, "run: getSubject=" + message.getSubject());
@@ -134,12 +153,10 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
             Log.i(TAG, "run: IOException" + e);
         }
 
-//        本邮箱的邮件全部存储之后, 转向展示页面即MainActivity
-        Intent intent1 = new Intent(ReceiveEmailActivity.this, MainActivity.class);
-        Bundle bundle1 = new Bundle();
-        bundle.putString("email_address", emailAddress);
-        intent1.putExtras(bundle1);
-        startActivity(intent1);
+        android.os.Message msg = handler.obtainMessage(7);
+        msg.obj = emailAddress;
+        handler.sendMessage(msg);
+
 
     }
 

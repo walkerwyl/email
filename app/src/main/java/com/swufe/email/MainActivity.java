@@ -1,6 +1,8 @@
 package com.swufe.email;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -27,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
+    SharedPreferences sharedPreferences;
+
     private String emailAddress;
 
     @Override
@@ -34,10 +38,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        assert bundle != null;
-        emailAddress = bundle.getString("email_address", "");
+        sharedPreferences = getSharedPreferences("myemail", Activity.MODE_PRIVATE);
+        emailAddress = sharedPreferences.getString("email_address", "");
+
         Log.i(TAG, "onCreate: 获得当前用户的身份emailAddress=" + emailAddress);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -95,11 +98,11 @@ public class MainActivity extends AppCompatActivity {
                 Intent addEmailIntent = new Intent(MainActivity.this, AddEmailActivity.class);
                 startActivity(addEmailIntent);
                 break;
-            case R.id.action_query:
-                Intent queryIntent = new Intent(MainActivity.this, QueryLitePalActivity.class);
-                startActivity(queryIntent);
-            case R.id.action_settings:
-                break;
+//            case R.id.action_query:
+//                Intent queryIntent = new Intent(MainActivity.this, QueryLitePalActivity.class);
+//                startActivity(queryIntent);
+//            case R.id.action_settings:
+//                break;
             default:
 //                将默认情况设置为父类的处理方式,正常运行
                 return super.onOptionsItemSelected(item);

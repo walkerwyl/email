@@ -16,15 +16,18 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.Toast;
 
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.swufe.email.data.Account;
+import com.swufe.email.data.MyMessage;
 
 import org.litepal.LitePal;
 
@@ -35,7 +38,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class WriteEmailActivity extends AppCompatActivity implements View.OnClickListener, Runnable{
@@ -54,6 +60,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
     ImageButton sendEmailButton;
     ImageButton attachFileButton;
     ImageView backView;
+    Button saveDraftButton;
     EditText editTargetAddress;
     EditText editEmailSubject;
     TextInputEditText textInputEmailBody;
@@ -84,6 +91,8 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
         backView = findViewById(R.id.btn_back);
         backView.setOnClickListener(WriteEmailActivity.this);
 
+        saveDraftButton = findViewById(R.id.btn_save_draft);
+        saveDraftButton.setOnClickListener(WriteEmailActivity.this);
 
         editTargetAddress = findViewById(R.id.edit_target_address);
         editEmailSubject = findViewById(R.id.edit_email_subject);
@@ -152,12 +161,34 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                 attachIntent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(attachIntent, 2);
                 break;
-            case R.id.btn_back:
-                Intent backMainAcitivity = new Intent(WriteEmailActivity.this, MainActivity.class);
+            case R.id.btn_save_draft:
+                targetAddress = editTargetAddress.getText().toString();
+                emailSubject = editEmailSubject.getText().toString();
+                emailBody = textInputEmailBody.getText().toString();
+                LocalDate date = LocalDate.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                // 草稿与其他不同, replyTo字段存储的是目标邮箱
+                MyMessage draft = new MyMessage();
+                draft.setStatus("1");
+                draft.setSubject(emailSubject);
+                draft.setReplyTo(targetAddress);
+                draft.setSentDate(date.format(formatter));
+                draft.setContent(emailBody);
+                draft.save();
+                Toast.makeText(WriteEmailActivity.this, "草稿已保存", Toast.LENGTH_SHORT).show();
+
+                intent = new Intent(WriteEmailActivity.this, MainActivity.class);
                 bundle = new Bundle();
                 bundle.putString("email_address", emailAddress);
-                backMainAcitivity.putExtras(bundle);
-                startActivity(backMainAcitivity);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            case R.id.btn_back:
+                intent = new Intent(WriteEmailActivity.this, MainActivity.class);
+                bundle = new Bundle();
+                bundle.putString("email_address", emailAddress);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             default:
                 break;

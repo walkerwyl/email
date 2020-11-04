@@ -53,19 +53,19 @@ public class InitialDatabaseActivity extends AppCompatActivity implements Runnab
 //        Config 表格的配置
         Config config = new Config();
         config.setNAME("yeah.net");
-        config.setPOP3HOST("smtp.yeah.net");
-        config.setPOP3PORT(25);
-        config.setSMTPHOST("pop.yeah.net");
-        config.setSMTPPORT(110);
+        config.setPOP3HOST("pop.yeah.net");
+        config.setPOP3PORT(110);
+        config.setSMTPHOST("smtp.yeah.net");
+        config.setSMTPPORT(25);
         config.save();
         Log.i(TAG, "run: yeah.net 配置完成");
 
         config = new Config();
         config.setNAME("163.com");
-        config.setPOP3HOST("smtp.163.com");
-        config.setPOP3PORT(25);
-        config.setSMTPHOST("pop.163.com");
-        config.setSMTPPORT(110);
+        config.setPOP3HOST("pop.163.com");
+        config.setPOP3PORT(110);
+        config.setSMTPHOST("smtp.163.com");
+        config.setSMTPPORT(25);
         config.save();
         Log.i(TAG, "run: 163.com 配置完成");
 
@@ -80,15 +80,16 @@ public class InitialDatabaseActivity extends AppCompatActivity implements Runnab
 
 //        测试使用的帐号
 //        Accont表的数据插入
-        Account account = new Account();
-        account.setEmailAddress("wang_yu_song@yeah.net");
-        account.setEmailPassword("JGAFQZMBIWANVRCD");
-        account.setPOP3HOST("pop.yeah.net");
-        account.setPOP3PORT(110);
-        account.setSMTPHOST("smtp.yeah.net");
-        account.setSMTPPORT(25);
-        account.save();
-        Log.i(TAG, "run: 个人账户建立");
+//        Account account = new Account();
+//        account.setStatus("2");
+//        account.setEmailAddress("wang_yu_song@yeah.net");
+//        account.setEmailPassword("JGAFQZMBIWANVRCD");
+//        account.setPOP3HOST("pop.yeah.net");
+//        account.setPOP3PORT(110);
+//        account.setSMTPHOST("smtp.yeah.net");
+//        account.setSMTPPORT(25);
+//        account.save();
+//        Log.i(TAG, "run: 个人账户建立");
 
         Message msg = handler.obtainMessage(7);
         handler.sendMessage(msg);

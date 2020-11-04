@@ -136,8 +136,9 @@ public class AddEmailActivity extends AppCompatActivity implements Runnable, Vie
 
     private boolean isValid(EditText... editTexts) {
 //        当且仅当关键信息非空时进行相关的操作
-        for (EditText editText : editTexts)
+        for (EditText editText : editTexts) {
             if (editText.getText().toString().equals("")) return false;
+        }
         return true;
     }
 

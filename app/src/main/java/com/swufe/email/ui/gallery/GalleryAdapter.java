@@ -1,9 +1,10 @@
-package com.swufe.email.ui.home;
+package com.swufe.email.ui.gallery;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
@@ -12,16 +13,15 @@ import androidx.annotation.Nullable;
 
 import com.swufe.email.R;
 
-
 import java.util.HashMap;
 import java.util.List;
 
-public class HomeAdapter extends ArrayAdapter {
-    private static final String TAG = "HomeAdapter";
+public class GalleryAdapter extends ArrayAdapter {
+    private static final String TAG = "GalleryAdapter";
 
-    public HomeAdapter(Context context,
-                       int resource,
-                       List<HashMap<String, String>> list) {
+    public GalleryAdapter (Context context,
+                           int resource,
+                           List<HashMap<String, String>> list) {
         super(context, resource, list);
     }
 
@@ -40,10 +40,9 @@ public class HomeAdapter extends ArrayAdapter {
         TextView textFrom = itemView.findViewById(R.id.text_from);
 
         textSubject.setText(map.get("ItemSubject"));
-        textDate.setText(map.get("ItemDate").substring(0, 10));
+        textDate.setText(map.get("ItemDate"));
         textFrom.setText(map.get("ItemFrom"));
 
         return itemView;
     }
-
 }
