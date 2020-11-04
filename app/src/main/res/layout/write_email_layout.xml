@@ -10,37 +10,37 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="42dp"
         android:background="@color/colorPrimary"
-        >
+        android:layout_marginBottom="28dp"
+        android:orientation="horizontal">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/btn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+            android:layout_width="32dp"
+            android:layout_height="31dp"
+            android:layout_gravity="center"
+            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+            tools:srcCompat="@mipmap/fork2" />
 
         <Spinner
             android:id="@+id/spinner_email_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="312dp"
+            android:layout_height="match_parent"
             />
 
         <ImageButton
             android:id="@+id/btn_send"
-            android:layout_width="39dp"
-            android:layout_height="38dp"
-            app:srcCompat="@android:drawable/ic_menu_send" />
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:background="#00CEE9FF"
+            android:scaleType="centerCrop"
+            app:srcCompat="@mipmap/send" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginBottom="10dp"
-        android:background="@color/colorGray"
-        />
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -78,9 +78,11 @@
 
             <ImageButton
                 android:id="@+id/btn_add_target_address"
-                android:layout_width="37dp"
+                android:layout_width="10dp"
                 android:layout_height="match_parent"
                 android:layout_weight="4"
+                android:background="#FAFAFA"
+                android:tint="#B5B0B0"
                 app:srcCompat="@android:drawable/ic_menu_add" />
 
             <!--        用来显示一个加号,方便用户从以往的通信地址中选中一个或多个作为目标地址list-->
@@ -101,7 +103,7 @@
 
             <EditText
                 android:id="@+id/edit_email_subject"
-                android:layout_width="match_parent"
+                android:layout_width="305dp"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="5dp"
                 android:layout_weight="4"
@@ -114,43 +116,43 @@
             <ImageButton
                 android:id="@+id/btn_attach_file"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:background="#FAFAFA"
+                android:tint="#B5B0B0"
                 app:srcCompat="@drawable/ic_menu_gallery" />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
             android:layout_marginBottom="5dp"
             android:background="@color/colorGray" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_input_emdil_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:hint="正文"
+                android:textSize="20sp" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/text_input_emdil_body"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="正文"
-                    android:textSize="20sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/btn_check_enclosure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:backgroundTint="#3700B3"
+            android:textColor="#ffffff"
+            android:textSize="16dp"
+            android:text="查  看  附  件" />
 
-            <ListView
-                android:id="@+id/listViewEnclosure"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="10" />
-
-        </LinearLayout>
 
     </LinearLayout>
 

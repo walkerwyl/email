@@ -15,14 +15,13 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
-import android.widget.TextView;
-import android.widget.ThemedSpinnerAdapter;
+
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.swufe.email.data.Account;
@@ -54,6 +53,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
     ImageButton addTargetAddress;
     ImageButton sendEmailButton;
     ImageButton attachFileButton;
+    ImageView backView;
     EditText editTargetAddress;
     EditText editEmailSubject;
     TextInputEditText textInputEmailBody;
@@ -78,7 +78,12 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
         Log.i(TAG, "onCreate: 写邮件页面获得当前用户身份emailAddress=" + emailAddress);
 
         fileNameArrayList = new ArrayList<>();
+        fileNameArrayList.add("附件");
         filePathArrayList = new ArrayList<>();
+
+        backView = findViewById(R.id.btn_back);
+        backView.setOnClickListener(WriteEmailActivity.this);
+
 
         editTargetAddress = findViewById(R.id.edit_target_address);
         editEmailSubject = findViewById(R.id.edit_email_subject);
@@ -106,6 +111,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                     spinnerAdapter = new ArrayAdapter<String>(WriteEmailActivity.this,
                             android.R.layout.simple_spinner_item, emailAddressList);
                     spinner.setAdapter(spinnerAdapter);
+
                 }
                 super.handleMessage(msg);
             }
@@ -145,6 +151,13 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                 attachIntent.setType("*/*");//无类型限制
                 attachIntent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(attachIntent, 2);
+                break;
+            case R.id.btn_back:
+                Intent backMainAcitivity = new Intent(WriteEmailActivity.this, MainActivity.class);
+                bundle = new Bundle();
+                bundle.putString("email_address", emailAddress);
+                backMainAcitivity.putExtras(bundle);
+                startActivity(backMainAcitivity);
                 break;
             default:
                 break;

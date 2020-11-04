@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ThemedSpinnerAdapter;
 import android.widget.Toast;
 
@@ -68,7 +69,7 @@ public class AddEmailActivity extends AppCompatActivity implements Runnable, Vie
         Button submit = findViewById(R.id.btn_submit);
         submit.setOnClickListener(AddEmailActivity.this);
 
-        ImageButton showCode = findViewById(R.id.show_code);
+        ImageView showCode = findViewById(R.id.show_code);
         showCode.setOnClickListener(AddEmailActivity.this);
 
         email_address.addTextChangedListener(new TextWatcher() {
