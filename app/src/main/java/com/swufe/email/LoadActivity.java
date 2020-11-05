@@ -44,7 +44,7 @@ public class LoadActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("myemail", Activity.MODE_PRIVATE);
 
         Date date = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH-mm");
         today = ft.format(date);
 
         emailAddress = sharedPreferences.getString("email_address", "");

@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -74,9 +75,8 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
     ArrayList<String> filePathArrayList;//传递给发送邮件活动
     ArrayList<String> fileNameArrayList;//展示附件列表数据源
 
-    LocalDate date;
-    DateTimeFormatter formatter;
-
+    Date date;
+    SimpleDateFormat ft;
 
     // TODO: 20-10-28 使用下拉列表让用户选择自己的发送邮件的邮箱帐号
     @SuppressLint("HandlerLeak")
@@ -90,8 +90,9 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
         emailAddress = bundle.getString("email_address", "");
         Log.i(TAG, "onCreate: 写邮件页面获得当前用户身份emailAddress=" + emailAddress);
 
-        date = LocalDate.now();
-        formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
+        date = new Date();
+        ft = new SimpleDateFormat("yyyy-MM-dd HH-mm");
+
 
         fileNameArrayList = new ArrayList<>();
         fileNameArrayList.add("附件");
@@ -190,7 +191,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                     break;
                 }
 
-                Intent saveDraftIntent = new Intent(WriteEmailActivity.this, EmptyActivity.class);
+                Intent saveDraftIntent = new Intent(WriteEmailActivity.this, ManagerActivity.class);
                 Bundle saveDraftBundle = new Bundle();
 
                 saveDraftBundle.putString("option", "save_draft");
@@ -198,7 +199,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                 saveDraftBundle.putString("email_subject", emailSubject);
                 saveDraftBundle.putString("target_address", targetAddress);
                 saveDraftBundle.putString("email_body", emailBody);
-                saveDraftBundle.putString("send_date", date.format(formatter));
+                saveDraftBundle.putString("send_date", ft.format(date));
 
                 saveDraftIntent.putExtras(saveDraftBundle);
                 startActivity(saveDraftIntent);

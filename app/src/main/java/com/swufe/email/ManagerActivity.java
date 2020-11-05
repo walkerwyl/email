@@ -47,23 +47,24 @@ public class ManagerActivity extends AppCompatActivity implements Runnable{
 
         sharedPreferences = getSharedPreferences("myemail", Activity.MODE_PRIVATE);
 
-//        Thread thread = new Thread(ManagerActivity.this);
-//        thread.start();
+        Thread thread = new Thread(ManagerActivity.this);
+        thread.start();
 
-//        handler = new Handler() {
-//            @Override
-//            public void handleMessage(@NonNull Message msg) {
-//                if (msg.what == 4 ) {
-////                    intent = new Intent(ManagerActivity.this, MainActivity.class);
-////                    intent.putExtras(bundle);
-////                    startActivity(intent);
-//
-//                } else if (msg.what == 5) {
-//                    textView.setText("草稿保存成功");
-//                }
-//
-//            }
-//        };
+        handler = new Handler() {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                if (msg.what == 4 ) {
+//                    intent = new Intent(ManagerActivity.this, MainActivity.class);
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
+
+                } else if (msg.what == 5) {
+                    textView.setText("草稿保存成功");
+//                    延迟几秒返回主页面
+                }
+
+            }
+        };
 
     }
 
@@ -97,6 +98,7 @@ public class ManagerActivity extends AppCompatActivity implements Runnable{
 
                 break;
             case "save_draft":
+                Log.i(TAG, "run: 开始保存草稿");
                 String emailAddress = bundle.getString("email_address", "");
                 String emailSubject = bundle.getString("email_subject", "");
                 String targetAddress = bundle.getString("target_address", "");
