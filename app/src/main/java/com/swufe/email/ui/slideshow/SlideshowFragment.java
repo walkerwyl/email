@@ -2,6 +2,8 @@ package com.swufe.email.ui.slideshow;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.text.RelativeDateTimeFormatter;
@@ -34,7 +36,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class SlideshowFragment extends Fragment implements Runnable, AdapterView.OnItemClickListener {
+public class SlideshowFragment extends Fragment implements Runnable, AdapterView.OnItemClickListener
+                                                            , AdapterView.OnItemLongClickListener{
 
     private static final String TAG = "SlideshowFragment";
 
@@ -77,6 +80,7 @@ public class SlideshowFragment extends Fragment implements Runnable, AdapterView
                     listViewSend.setAdapter(slideshowAdapter);
                     listViewSend.setEmptyView(root.findViewById(R.id.nosend));
                     listViewSend.setOnItemClickListener(SlideshowFragment.this);
+                    listViewSend.setOnItemLongClickListener(SlideshowFragment.this);
                 }
             }
         };
@@ -93,6 +97,7 @@ public class SlideshowFragment extends Fragment implements Runnable, AdapterView
         String subjectString = textSubject.getText().toString();
         String fromString = textFrom.getText().toString();
         String dateString = textDate.getText().toString();
+        Log.i(TAG, "onItemClick: send date 传递" + dateString);
 
         Log.i(TAG, "onItemClick: " + subjectString);
         Log.i(TAG, "onItemClick: " + fromString);
@@ -107,6 +112,34 @@ public class SlideshowFragment extends Fragment implements Runnable, AdapterView
 
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long l) {
+//        对用户选中的数据进行删除
+        //长按按钮出现提示框,点击确定,确认删除当前选中的数据
+        TextView textViewSubject = view.findViewById(R.id.text_subject);
+        TextView textViewSendDate = view.findViewById(R.id.text_date);
+
+        String subject = textViewSubject.getText().toString();
+        String sendDate = textViewSendDate.getText().toString();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("提示")
+                .setMessage("请确认是否删除当前数据")
+                .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        Log.i(TAG, "onClick: 点击了确认按钮");
+                        slideshowAdapter.remove(listViewSend.getItemAtPosition(position));
+                    }
+                }).setNegativeButton("否",null);
+        builder.create().show();
+//        同时从数据库中删除数据
+        LitePal.deleteAll(MyMessage.class, "status = ? and subject = ? and sendDate = ?", "2", subject, sendDate);
+        Log.i(TAG, "onItemLongClick: send date=" +  sendDate);
+
+        return true;
     }
 
     @Override

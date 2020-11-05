@@ -163,6 +163,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                 sendEmailBundle.putString("target_address", targetAddress);
                 sendEmailBundle.putString("email_subject", emailSubject);
                 sendEmailBundle.putString("email_body", emailBody);
+                sendEmailBundle.putString("send_date", ft.format(date));
                 sendEmailBundle.putStringArrayList("filePathArrayList", filePathArrayList);
 
                 Intent sendEmailIntent = new Intent(WriteEmailActivity.this, SendEmailActivity.class);

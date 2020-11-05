@@ -38,6 +38,7 @@ public class SendEmailActivity extends AppCompatActivity implements Runnable{
     String targetAddress;
     String emailSubject;
     String emailBody;
+    String sendDate;
     ArrayList<String> targetAddressList;
     ArrayList<String> filePathArrayList;
     ArrayList<File> fileArrayList;
@@ -55,6 +56,7 @@ public class SendEmailActivity extends AppCompatActivity implements Runnable{
         targetAddress = bundle.getString("target_address", "");
         emailSubject = bundle.getString("email_subject", "");
         emailBody = bundle.getString("email_body", "");
+        sendDate = bundle.getString("send_date", "");
         filePathArrayList = bundle.getStringArrayList("filePathArrayList");
         Log.i(TAG, "onCreate: emailAddress" + emailAddress);
         Log.i(TAG, "onCreate: targetAddress" + targetAddress);
@@ -103,6 +105,9 @@ public class SendEmailActivity extends AppCompatActivity implements Runnable{
 //            0 收件 1 草稿 2 已发送
             myMessage.setStatus("2");
             myMessage.setSubject(emailSubject);
+            myMessage.setSentDate(sendDate);
+            Log.i(TAG, "run: send date=" + sendDate);
+//            此时保存已发送邮件的日期
             myMessage.setContent(emailBody);
             myMessage.setFrom(emailAddress);
 //            用第一个收件人代替
