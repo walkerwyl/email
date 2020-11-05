@@ -102,10 +102,11 @@ public class ManagerActivity extends AppCompatActivity implements Runnable{
                 String emailAddress = bundle.getString("email_address", "");
                 String emailSubject = bundle.getString("email_subject", "");
                 String targetAddress = bundle.getString("target_address", "");
-                String sendDate = bundle.getString("sent_date", "");
+                String sendDate = bundle.getString("send_date", "");
                 String emailBody = bundle.getString("email_body", "");
                 Log.i(TAG, "run: save_draft emailaddress=" + emailAddress);
                 Log.i(TAG, "run: save_draft subject=" + emailSubject);
+                Log.i(TAG, "run: send_date接受=" + sendDate);
 
                 // 草稿与其他不同, replyTo字段存储的是目标邮箱
                 MyMessage draft = new MyMessage();

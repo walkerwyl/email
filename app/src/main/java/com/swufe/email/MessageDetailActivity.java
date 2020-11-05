@@ -79,7 +79,7 @@ public class MessageDetailActivity extends AppCompatActivity implements Runnable
     @Override
     public void run() {
 //        根据提供的信息查询, 返回最后显示在界面上
-        List<MyMessage> myMessageList = LitePal.where("subject = ? and sentDate like ?", subjectString, dateString + "%")
+        List<MyMessage> myMessageList = LitePal.where("subject = ? and sendDate like ?", subjectString, dateString + "%")
                 .limit(1)
                 .find(MyMessage.class);
         MyMessage myMessage = myMessageList.get(0);

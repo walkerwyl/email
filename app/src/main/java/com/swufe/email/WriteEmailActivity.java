@@ -200,6 +200,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                 saveDraftBundle.putString("target_address", targetAddress);
                 saveDraftBundle.putString("email_body", emailBody);
                 saveDraftBundle.putString("send_date", ft.format(date));
+                Log.i(TAG, "onClick: send_date=" + ft.format(date));
 
                 saveDraftIntent.putExtras(saveDraftBundle);
                 startActivity(saveDraftIntent);

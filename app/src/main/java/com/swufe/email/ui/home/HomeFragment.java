@@ -121,7 +121,6 @@ public class HomeFragment extends Fragment implements Runnable, AdapterView.OnIt
         Log.i(TAG, "onItemClick: " + fromString);
         Log.i(TAG, "onItemClick: " + dateString);
 
-//        不知道这样写是否可以
         Intent intent = new Intent(getContext(), MessageDetailActivity.class);
 
         Bundle bundle = new Bundle();

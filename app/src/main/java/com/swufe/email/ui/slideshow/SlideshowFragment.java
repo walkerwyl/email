@@ -2,6 +2,7 @@ package com.swufe.email.ui.slideshow;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.text.RelativeDateTimeFormatter;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.swufe.email.MessageDetailActivity;
 import com.swufe.email.R;
 import com.swufe.email.data.MyMessage;
 import com.swufe.email.ui.gallery.GalleryAdapter;
@@ -31,7 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class SlideshowFragment extends Fragment implements Runnable {
+public class SlideshowFragment extends Fragment implements Runnable, AdapterView.OnItemClickListener {
 
     private static final String TAG = "SlideshowFragment";
 
@@ -73,6 +76,7 @@ public class SlideshowFragment extends Fragment implements Runnable {
                             listData);
                     listViewSend.setAdapter(slideshowAdapter);
                     listViewSend.setEmptyView(root.findViewById(R.id.nosend));
+                    listViewSend.setOnItemClickListener(SlideshowFragment.this);
                 }
             }
         };
@@ -80,6 +84,30 @@ public class SlideshowFragment extends Fragment implements Runnable {
         return root;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        TextView textSubject = view.findViewById(R.id.text_subject);
+        TextView textFrom = view.findViewById(R.id.text_from);
+        TextView textDate = view.findViewById(R.id.text_date);
+
+        String subjectString = textSubject.getText().toString();
+        String fromString = textFrom.getText().toString();
+        String dateString = textDate.getText().toString();
+
+        Log.i(TAG, "onItemClick: " + subjectString);
+        Log.i(TAG, "onItemClick: " + fromString);
+        Log.i(TAG, "onItemClick: " + dateString);
+
+        Intent intent = new Intent(getContext(), MessageDetailActivity.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("ItemSubject", subjectString);
+        bundle.putString("ItemFrom", fromString);
+        bundle.putString("ItemDate", dateString);
+
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
 
     @Override
     public void run() {
@@ -103,4 +131,6 @@ public class SlideshowFragment extends Fragment implements Runnable {
         msg.obj = listData;
         handler.sendMessage(msg);
     }
+
+
 }

@@ -2,6 +2,7 @@ package com.swufe.email.ui.gallery;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Gallery;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,7 +22,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.swufe.email.DraftDetailActivity;
+import com.swufe.email.MessageDetailActivity;
 import com.swufe.email.R;
+import com.swufe.email.WriteEmailActivity;
 import com.swufe.email.data.MyMessage;
 
 import org.litepal.LitePal;
@@ -28,7 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class GalleryFragment extends Fragment  implements  Runnable{
+public class GalleryFragment extends Fragment  implements  Runnable, AdapterView.OnItemClickListener {
 
     private static final String TAG = "GalleryFragment";
 
@@ -73,6 +79,7 @@ public class GalleryFragment extends Fragment  implements  Runnable{
                             listData);
                     listViewDRAFT.setAdapter(galleryAdapter);
                     listViewDRAFT.setEmptyView(root.findViewById(R.id.nodraft));
+                    listViewDRAFT.setOnItemClickListener(GalleryFragment.this);
                 }
             }
         };
@@ -101,5 +108,30 @@ public class GalleryFragment extends Fragment  implements  Runnable{
         Message msg = handler.obtainMessage(6);
         msg.obj = listData;
         handler.sendMessage(msg);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        TextView textSubject = view.findViewById(R.id.text_subject);
+        TextView textFrom = view.findViewById(R.id.text_from);
+        TextView textDate = view.findViewById(R.id.text_date);
+
+        String subjectString = textSubject.getText().toString();
+        String fromString = textFrom.getText().toString();
+        String dateString = textDate.getText().toString();
+
+        Log.i(TAG, "onItemClick: " + subjectString);
+        Log.i(TAG, "onItemClick: " + fromString);
+        Log.i(TAG, "onItemClick: " + dateString);
+
+        Intent intent = new Intent(getContext(), DraftDetailActivity.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("ItemSubject", subjectString);
+        bundle.putString("ItemFrom", fromString);
+        bundle.putString("ItemDate", dateString);
+
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

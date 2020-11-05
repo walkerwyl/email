@@ -16,7 +16,7 @@ public class MyMessage extends LitePalSupport {
     String subject;
     String from;
     String replyTo;
-    String sentDate;
+    String sendDate;
     String contentType;
     String content;
     int messageNumber;
@@ -62,11 +62,11 @@ public class MyMessage extends LitePalSupport {
     }
 
     public String getSentDate() {
-        return sentDate;
+        return sendDate;
     }
 
-    public void setSentDate(String sentDate) {
-        this.sentDate = sentDate;
+    public void setSentDate(String sendDate) {
+        this.sendDate = sendDate;
     }
 
     public String getContentType() {
