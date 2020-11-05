@@ -33,7 +33,7 @@ public class ChangeEmailActivity extends AppCompatActivity implements Runnable, 
 private static final String TAG = "ChangeEmailActivity";
 
     List<HashMap<String, String>> list_data;
-    ListAdapter listAdapter;
+
 
     static Handler handler;
 

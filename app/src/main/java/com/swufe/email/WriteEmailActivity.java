@@ -64,6 +64,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
     ImageButton attachFileButton;
     ImageView backView;
     Button saveDraftButton;
+    Button checkEnclosureButton;
     EditText editTargetAddress;
     EditText editEmailSubject;
     TextInputEditText textInputEmailBody;
@@ -79,7 +80,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
     SimpleDateFormat ft;
 
     // TODO: 20-10-28 使用下拉列表让用户选择自己的发送邮件的邮箱帐号
-    @SuppressLint("HandlerLeak")
+    @SuppressLint({"HandlerLeak", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,8 +96,10 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
 
 
         fileNameArrayList = new ArrayList<>();
-        fileNameArrayList.add("附件");
         filePathArrayList = new ArrayList<>();
+
+        checkEnclosureButton = findViewById(R.id.btn_check_enclosure);
+        checkEnclosureButton.setOnClickListener(WriteEmailActivity.this);
 
         backView = findViewById(R.id.btn_back);
         backView.setOnClickListener(WriteEmailActivity.this);
@@ -169,6 +172,14 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                 Intent sendEmailIntent = new Intent(WriteEmailActivity.this, SendEmailActivity.class);
                 sendEmailIntent.putExtras(sendEmailBundle);
                 startActivity(sendEmailIntent);
+                break;
+            case R.id.btn_check_enclosure:
+                Intent checkFileIntent = new Intent(WriteEmailActivity.this, CheckEnclosureActivity.class);
+                Bundle checkFileBundle = new Bundle();
+                checkFileBundle.putStringArrayList("file_path",filePathArrayList);
+                checkFileIntent.putExtras(checkFileBundle);
+//                startActivityForResult(checkFileIntent, 3);
+                startActivity(checkFileIntent);
                 break;
             case R.id.btn_attach_file:
                 Intent attachIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -252,7 +263,13 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                 fileNameArrayList.add(file.getName());
             Log.i(TAG, "onActivityResult: fileNameArrayList size=" + fileNameArrayList.size());
 //            在更新的同时对附件列表进行更新,使用默认的listview和adapter进行处理
-        } else {
+        }
+//        else if (requestCode == 3 && resultCode == 4) {
+//            Bundle fileBundle = data.getExtras();
+//            filePathArrayList = fileBundle.getStringArrayList("file_path");
+//            Log.i(TAG, "onActivityResult: filePathArrayList" + filePathArrayList);
+//        }
+        else {
             Log.i(TAG, "onActivityResult: 出错");
         }
         super.onActivityResult(requestCode, resultCode, data);

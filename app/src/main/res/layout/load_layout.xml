@@ -7,12 +7,12 @@
     android:orientation="vertical"
     tools:context=".LoadActivity">
 
-    <TextView
-        android:id="@+id/load_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="加载界面"
-        android:textSize="36sp"
-        />
+<!--    <TextView-->
+<!--        android:id="@+id/load_text"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:gravity="center"-->
+<!--        android:text="加载界面"-->
+<!--        android:textSize="36sp"-->
+<!--        />-->
 </LinearLayout>

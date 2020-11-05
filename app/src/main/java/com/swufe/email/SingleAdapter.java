@@ -40,4 +40,5 @@ public class SingleAdapter extends ArrayAdapter {
 
         return itemView;
     }
+
 }
