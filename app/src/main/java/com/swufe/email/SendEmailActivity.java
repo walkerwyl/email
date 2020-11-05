@@ -19,13 +19,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.Authenticator;
+import javax.mail.BodyPart;
 import javax.mail.Message;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 
 public class SendEmailActivity extends AppCompatActivity implements Runnable{
 
@@ -66,11 +74,6 @@ public class SendEmailActivity extends AppCompatActivity implements Runnable{
         targetAddressList = new ArrayList<>();
         targetAddressList = splitTargetAddress(targetAddress);
 
-        fileArrayList = new ArrayList<>();
-        for (String filePath : filePathArrayList) {
-            File file = new File(filePath);
-            fileArrayList.add(file);
-        }
 
         for (String item : targetAddressList) {
             Log.i(TAG, "onCreate: targetAddress item=" + item);
@@ -82,11 +85,11 @@ public class SendEmailActivity extends AppCompatActivity implements Runnable{
         handler = new Handler() {
             @Override
             public void handleMessage(android.os.Message msg) {
-//                if (msg.what == 1) {
-////                    邮件发送成功
-//                    intent = new Intent(SendEmailActivity.this, MainActivity.class);
-//                    startActivity(intent);
-//                }
+                if (msg.what == 1) {
+//                    邮件发送成功
+                    intent = new Intent(SendEmailActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
             }
         };
     }
@@ -158,8 +161,31 @@ public class SendEmailActivity extends AppCompatActivity implements Runnable{
             message.setRecipient(Message.RecipientType.TO,new InternetAddress(targetAddress));
 //设置标题
             message.setSubject(emailSubject);
+
 //设置邮件的内容
-            message.setText(emailBody);
+            Multipart multipart = new MimeMultipart();
+
+            // 设置邮件的文本内容
+            BodyPart contentPart = new MimeBodyPart();
+            contentPart.setText(emailBody);
+//            message.setText(emailBody);
+            multipart.addBodyPart(contentPart);
+            // 循环添加附件
+            for (String filePath : filePathArrayList) {
+                BodyPart messageBodyPart = new MimeBodyPart();
+                DataSource source = new FileDataSource(filePath);
+                File file = new File(filePath);
+                // 添加附件的内容
+                messageBodyPart.setDataHandler(new DataHandler(source));
+                // 添加附件的标题
+                // 这里很重要，通过下面的Base64编码的转换可以保证你的中文附件标题名在发送时不会变成乱码
+                messageBodyPart.setFileName(MimeUtility.encodeText(file.getName()));
+                multipart.addBodyPart(messageBodyPart);
+            }
+
+            // 将multipart对象放到message中
+            message.setContent(multipart);
+
             message.setSentDate(new Date());
 //3.发送邮件
             Transport.send(message);
