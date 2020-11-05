@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.ColorSpace;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,10 +26,14 @@ public class InitialDatabaseActivity extends AppCompatActivity implements Runnab
 
     static Handler handler;
 
+    SharedPreferences sharedPreferences;
+
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sharedPreferences = getSharedPreferences("myemail", Activity.MODE_PRIVATE);
 
         Thread thread = new Thread(InitialDatabaseActivity.this);
         thread.start();
@@ -80,16 +86,21 @@ public class InitialDatabaseActivity extends AppCompatActivity implements Runnab
 
 //        测试使用的帐号
 //        Accont表的数据插入
-//        Account account = new Account();
-//        account.setStatus("2");
-//        account.setEmailAddress("wang_yu_song@yeah.net");
-//        account.setEmailPassword("JGAFQZMBIWANVRCD");
-//        account.setPOP3HOST("pop.yeah.net");
-//        account.setPOP3PORT(110);
-//        account.setSMTPHOST("smtp.yeah.net");
-//        account.setSMTPPORT(25);
-//        account.save();
-//        Log.i(TAG, "run: 个人账户建立");
+        Account account = new Account();
+        account.setStatus("2");
+        account.setEmailAddress("wang_yu_song@yeah.net");
+        account.setEmailPassword("JGAFQZMBIWANVRCD");
+        account.setPOP3HOST("pop.yeah.net");
+        account.setPOP3PORT(110);
+        account.setSMTPHOST("smtp.yeah.net");
+        account.setSMTPPORT(25);
+        account.save();
+        Log.i(TAG, "run: 个人账户建立");
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("email_address", account.getEmailAddress());
+        editor.apply();
+
 
         Message msg = handler.obtainMessage(7);
         handler.sendMessage(msg);

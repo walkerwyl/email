@@ -16,8 +16,10 @@ import com.swufe.email.data.Account;
 
 import org.litepal.LitePal;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 public class LoadActivity extends AppCompatActivity {
@@ -41,9 +43,9 @@ public class LoadActivity extends AppCompatActivity {
         //用于存取数据
         sharedPreferences = getSharedPreferences("myemail", Activity.MODE_PRIVATE);
 
-        LocalDate date = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        today = date.format(formatter);
+        Date date = new Date();
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+        today = ft.format(date);
 
         emailAddress = sharedPreferences.getString("email_address", "");
         updateTime = sharedPreferences.getString("update_time", "");

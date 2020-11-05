@@ -166,7 +166,8 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                 emailSubject = editEmailSubject.getText().toString();
                 emailBody = textInputEmailBody.getText().toString();
                 LocalDate date = LocalDate.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
+//                假定必要部分不会缺失
                 // 草稿与其他不同, replyTo字段存储的是目标邮箱
                 MyMessage draft = new MyMessage();
                 draft.setStatus("1");

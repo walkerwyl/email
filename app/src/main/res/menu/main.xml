@@ -9,6 +9,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_change_email"
+        android:orderInCategory="100"
+        android:title="切换帐号"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_add_email"
         android:orderInCategory="100"
         android:title="添加邮箱"

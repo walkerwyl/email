@@ -15,6 +15,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.swufe.email.ui.home.HomeFragment;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -51,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 Bundle bundle = new Bundle();
                 bundle.putString("email_address", emailAddress);
                 Intent writeEmailIntent = new Intent(MainActivity.this, WriteEmailActivity.class);
@@ -98,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
                 Intent addEmailIntent = new Intent(MainActivity.this, AddEmailActivity.class);
                 startActivity(addEmailIntent);
                 break;
+            case R.id.action_change_email:
+                Intent changeEmailIntent = new Intent(MainActivity.this, ChangeEmailActivity.class);
+                startActivityForResult(changeEmailIntent, 4);
+                break;
 //            case R.id.action_query:
 //                Intent queryIntent = new Intent(MainActivity.this, QueryLitePalActivity.class);
 //                startActivity(queryIntent);
@@ -108,6 +111,15 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (4 == requestCode && 5 == resultCode) {
+            Bundle bundle = data.getExtras();
+            emailAddress = bundle.getString("email_address", "");
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

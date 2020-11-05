@@ -8,6 +8,7 @@ import java.util.Date;
 public class MyMessage extends LitePalSupport {
 //    一开始只完成文本文件的传输和展示
 //    只考虑文本文件
+    String uid;
     String status;
     //用于分类 0 邮箱中的邮件
     //1 草稿箱中的邮件
@@ -19,6 +20,14 @@ public class MyMessage extends LitePalSupport {
     String contentType;
     String content;
     int messageNumber;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     public String getStatus() {
         return status;

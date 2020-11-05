@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Button;
 
+import com.sun.mail.pop3.POP3Folder;
 import com.swufe.email.data.Account;
 import com.swufe.email.data.MyMessage;
 
@@ -22,12 +23,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.mail.Address;
+import javax.mail.FetchProfile;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.UIDFolder;
 
 public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
 
@@ -100,9 +103,15 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
             // 连接pop.sina.com邮件服务器 //
             store.connect(account.getPOP3HOST(), emailAddress, account.getEmailPassword()); // 返回文件夹对象
             Log.i(TAG, "run: 链接pop服务器");
+            
 
-            Folder folder = store.getFolder("INBOX");
+            
+
+            POP3Folder folder = (POP3Folder) store.getFolder("INBOX");
             folder.open(Folder.READ_ONLY); // 获取信息
+            FetchProfile profile = new FetchProfile();
+            profile.add(UIDFolder.FetchProfileItem.UID);
+            profile.add(FetchProfile.Item.ENVELOPE);
             Message[] messages = folder.getMessages();
             Log.i(TAG, "run: 查看messages大小"+ messages.length);
             for (Message message : messages) {
@@ -110,6 +119,20 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
 //                查找需要的部分存储在数据库中, 每次链减进行检查, 当messages的大小发生变化时
 //                便主动队数据库进行更新操作(默认用户为了获得最新的邮箱会进行重新登录刷新界面操作)
                 MyMessage myMessage = new MyMessage();
+                myMessage.setUid(folder.getUID(message));
+                Log.i(TAG, "run: 此邮件的UID=" + folder.getUID(message));
+
+                //                在本地数据库中查询此UID,若存在则不保存,只保存本地没有的邮件
+                //            从本地获得已读取的邮件信息
+
+                List<MyMessage> storeMessages =  LitePal.where("uid = ?", folder.getUID(message))
+                        .limit(1)
+                        .find(MyMessage.class);
+                if (storeMessages.size() == 1) {
+                    Log.i(TAG, "run: 此邮件已存在");
+                    continue;
+                }
+                
                 myMessage.setStatus("0");
                 myMessage.setSubject(message.getSubject());
 
@@ -135,6 +158,7 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
                     else if (validMail(matchMail(item.toString()))) myMessage.setReplyTo(matchMail(item.toString()));
                 }
                 Log.i(TAG, "run: ---------------------------------------------------------------");
+
                 myMessage.save();
 //                接受数据时同时对数据进行存储
 //                如何避免重复插入相同的数据
