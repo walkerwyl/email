@@ -9,6 +9,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.swufe.email.data.Account;
+import com.swufe.email.data.MyMessage;
 import com.teprinciple.mailsender.Mail;
 import com.teprinciple.mailsender.MailSender;
 
@@ -107,6 +108,17 @@ public class SendEmailActivity extends AppCompatActivity implements Runnable{
                 mail.setAttachFiles(fileArrayList);
             }
             Log.i(TAG, "run: 邮件发送成功");
+
+//            发送邮件的同时保存到数据库中
+            MyMessage myMessage = new MyMessage();
+//            0 收件 1 草稿 2 已发送
+            myMessage.setStatus("2");
+            myMessage.setSubject(emailSubject);
+            myMessage.setContent(emailBody);
+            myMessage.setFrom(emailAddress);
+//            用第一个收件人代替
+            myMessage.setReplyTo(targetAddressList.get(0));
+            myMessage.save();
 
             // 发送邮箱
             MailSender.getInstance().sendMail(mail,null);

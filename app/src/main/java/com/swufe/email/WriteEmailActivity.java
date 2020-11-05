@@ -43,6 +43,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WriteEmailActivity extends AppCompatActivity implements View.OnClickListener, Runnable{
 
@@ -129,21 +131,44 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View view) {
+        LocalDate date = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
         switch (view.getId()) {
-            case R.id.btn_add_target_address:
-//                跳转到用户最近的通信地址,列表展示,需要新的活动返回数据startActivityForResult
-                Bundle bundle = new Bundle();
-                bundle.putString("email_address", "");
-                Intent intent = new Intent(WriteEmailActivity.this, AddTargetAddressActivity.class);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, 1);
-                break;
+//            case R.id.btn_add_target_address:
+////                跳转到用户最近的通信地址,列表展示,需要新的活动返回数据startActivityForResult
+//                Bundle bundle = new Bundle();
+//                bundle.putString("email_address", "");
+//                Intent intent = new Intent(WriteEmailActivity.this, AddTargetAddressActivity.class);
+//                intent.putExtras(bundle);
+//                startActivityForResult(intent, 1);
+//                break;
             case R.id.btn_send:
 //                执行发送邮件的任务
 //                收集数据
                 targetAddress = editTargetAddress.getText().toString();
                 emailSubject = editEmailSubject.getText().toString();
                 emailBody = textInputEmailBody.getText().toString();
+
+//                判断必要信息, 否则不执行
+                if (emailSubject.equals("")) {
+                    Toast.makeText(WriteEmailActivity.this,
+                            "请填写主题", Toast.LENGTH_SHORT).show();
+                    break;
+                } else if (targetAddress.equals("") || !isValidTargetAddress(targetAddress)) {
+                    Toast.makeText(WriteEmailActivity.this,
+                            "请填写收信人", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
+
+                MyMessage myMessage = new MyMessage();
+                myMessage.setStatus("2");
+                myMessage.setSubject(emailSubject);
+                myMessage.setSentDate(date.format(formatter));
+                myMessage.setContent(emailBody);
+                myMessage.setFrom(emailAddress);
+                myMessage.setReplyTo(targetAddress);
+                myMessage.save();
 
                 Bundle sendEmailBundle = new Bundle();
                 sendEmailBundle.putString("email_address", emailAddress);
@@ -165,24 +190,38 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                 targetAddress = editTargetAddress.getText().toString();
                 emailSubject = editEmailSubject.getText().toString();
                 emailBody = textInputEmailBody.getText().toString();
-                LocalDate date = LocalDate.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
+
+                //                判断必要信息, 否则不执行
+                if (emailSubject.equals("")) {
+                    Toast.makeText(WriteEmailActivity.this,
+                            "请填写主题", Toast.LENGTH_SHORT).show();
+                    break;
+                } else if (targetAddress.equals("") || !isValidTargetAddress(targetAddress)) {
+                    Toast.makeText(WriteEmailActivity.this,
+                            "请填写收信人", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
 //                假定必要部分不会缺失
                 // 草稿与其他不同, replyTo字段存储的是目标邮箱
                 MyMessage draft = new MyMessage();
                 draft.setStatus("1");
+                draft.setFrom(emailAddress);
                 draft.setSubject(emailSubject);
                 draft.setReplyTo(targetAddress);
                 draft.setSentDate(date.format(formatter));
                 draft.setContent(emailBody);
                 draft.save();
-                Toast.makeText(WriteEmailActivity.this, "草稿已保存", Toast.LENGTH_SHORT).show();
 
-                intent = new Intent(WriteEmailActivity.this, MainActivity.class);
-                bundle = new Bundle();
-                bundle.putString("email_address", emailAddress);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                Log.i(TAG, "onClick: draft from=" + emailAddress);
+                Log.i(TAG, "onClick: draft subject=" + emailSubject);
+                Log.i(TAG, "onClick: draft body=" + emailBody);
+
+                Toast.makeText(WriteEmailActivity.this, "草稿已保存", Toast.LENGTH_SHORT).show();
+                Log.i(TAG, "onClick: 草稿保存成功, 返回主页面");
+
+//                intent = new Intent(WriteEmailActivity.this, MainActivity.class);
+//                startActivity(intent);
                 break;
             case R.id.btn_back:
                 intent = new Intent(WriteEmailActivity.this, MainActivity.class);
@@ -194,6 +233,22 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
             default:
                 break;
         }
+    }
+
+    private boolean isValidTargetAddress (String source) {
+        String[] array = source.split(";");
+        for (String item : array) {
+            if (!validMail(item)) return false;
+        }
+        return true;
+    }
+
+    private boolean validMail (String source) {
+//        利用正则表达式对字符串进行判断,若符合一般标准且没有多于的字符,则返回true
+        String regex = "[a-zA-z.[0-9]]*@[a-zA-z[0-9]]*\\.(com|cn|net)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(source);
+        return matcher.find() && source.equals(matcher.group());
     }
 
     @Override

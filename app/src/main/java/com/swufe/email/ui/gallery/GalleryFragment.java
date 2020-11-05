@@ -50,9 +50,11 @@ public class GalleryFragment extends Fragment  implements  Runnable{
                 ViewModelProviders.of(this).get(GalleryViewModel.class);
         root = inflater.inflate(R.layout.fragment_gallery, container, false);
 
+        Log.i(TAG, "onCreateView: 草稿界面");
+
         Bundle bundle = getActivity().getIntent().getExtras();
         emailAddress = bundle.getString("email_address", "");
-        Log.i(TAG, "onCreateView: current emailAddress" + emailAddress);
+        Log.i(TAG, "onCreateView: current emailAddress=" + emailAddress);
 
         listViewDRAFT = root.findViewById(R.id.listView_draft);
 
@@ -79,7 +81,7 @@ public class GalleryFragment extends Fragment  implements  Runnable{
     @Override
     public void run() {
         List<HashMap<String, String>> listData = new ArrayList<>();
-        List<MyMessage> myMessageList = LitePal.where("status = ?", "1")
+        List<MyMessage> myMessageList = LitePal.where("status = ? and from = ?", "1", emailAddress)
                 .find(MyMessage.class);
 
         for (MyMessage myMessage : myMessageList) {

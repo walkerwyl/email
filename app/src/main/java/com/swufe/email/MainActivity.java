@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_change_email:
                 Intent changeEmailIntent = new Intent(MainActivity.this, ChangeEmailActivity.class);
-                startActivityForResult(changeEmailIntent, 4);
+                startActivity(changeEmailIntent);
                 break;
 //            case R.id.action_query:
 //                Intent queryIntent = new Intent(MainActivity.this, QueryLitePalActivity.class);
@@ -111,15 +111,6 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
         return true;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (4 == requestCode && 5 == resultCode) {
-            Bundle bundle = data.getExtras();
-            emailAddress = bundle.getString("email_address", "");
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.swufe.email.ui.home;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -40,6 +42,9 @@ public class HomeFragment extends Fragment implements Runnable, AdapterView.OnIt
     HomeAdapter homeAdapter;
     ListView listViewINBOX;
 
+    SharedPreferences sharedPreferences;
+
+
     String emailAddress;
     List<HashMap<String, String>> listData;
 
@@ -48,11 +53,13 @@ public class HomeFragment extends Fragment implements Runnable, AdapterView.OnIt
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        final View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        Bundle bundle = getActivity().getIntent().getExtras();
-        emailAddress = bundle.getString("email_address", "");
-        Log.i(TAG, "onCreateView: 成功接受LoadActivity传递的参数" + emailAddress);
+//        Bundle bundle = getActivity().getIntent().getExtras();
+//        emailAddress = bundle.getString("email_address", "");
+//        Log.i(TAG, "onCreateView: 成功接受LoadActivity传递的参数" + emailAddress);
+        sharedPreferences = getActivity().getSharedPreferences("myemail", Activity.MODE_PRIVATE);
+        emailAddress = sharedPreferences.getString("email_address", "");
 
         listViewINBOX = root.findViewById(R.id.listView_inbox);
 
@@ -89,9 +96,9 @@ public class HomeFragment extends Fragment implements Runnable, AdapterView.OnIt
             map.put("ItemSubject", myMessage.getSubject());
             map.put("ItemDate", myMessage.getSentDate());
             map.put("ItemFrom", myMessage.getFrom());
-            Log.i(TAG, "run: ItemSubject=" + myMessage.getSubject());
-            Log.i(TAG, "run: ItemDate=" + myMessage.getSentDate());
-            Log.i(TAG, "run: ItemFrom=" + myMessage.getFrom());
+//            Log.i(TAG, "run: ItemSubject=" + myMessage.getSubject());
+//            Log.i(TAG, "run: ItemDate=" + myMessage.getSentDate());
+//            Log.i(TAG, "run: ItemFrom=" + myMessage.getFrom());
             listData.add(map);
         }
 
