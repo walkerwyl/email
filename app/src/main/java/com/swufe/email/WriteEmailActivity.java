@@ -160,22 +160,13 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                     break;
                 }
 
-
-                MyMessage myMessage = new MyMessage();
-                myMessage.setStatus("2");
-                myMessage.setSubject(emailSubject);
-                myMessage.setSentDate(date.format(formatter));
-                myMessage.setContent(emailBody);
-                myMessage.setFrom(emailAddress);
-                myMessage.setReplyTo(targetAddress);
-                myMessage.save();
-
                 Bundle sendEmailBundle = new Bundle();
                 sendEmailBundle.putString("email_address", emailAddress);
                 sendEmailBundle.putString("target_address", targetAddress);
                 sendEmailBundle.putString("email_subject", emailSubject);
                 sendEmailBundle.putString("email_body", emailBody);
                 sendEmailBundle.putStringArrayList("filePathArrayList", filePathArrayList);
+
                 Intent sendEmailIntent = new Intent(WriteEmailActivity.this, SendEmailActivity.class);
                 sendEmailIntent.putExtras(sendEmailBundle);
                 startActivity(sendEmailIntent);

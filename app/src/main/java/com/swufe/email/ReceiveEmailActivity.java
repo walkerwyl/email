@@ -105,8 +105,6 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
             Log.i(TAG, "run: 链接pop服务器");
             
 
-            
-
             POP3Folder folder = (POP3Folder) store.getFolder("INBOX");
             folder.open(Folder.READ_ONLY); // 获取信息
             FetchProfile profile = new FetchProfile();

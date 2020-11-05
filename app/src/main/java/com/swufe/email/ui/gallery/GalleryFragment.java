@@ -1,6 +1,8 @@
 package com.swufe.email.ui.gallery;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,6 +41,7 @@ public class GalleryFragment extends Fragment  implements  Runnable{
     GalleryAdapter galleryAdapter;
 
     static Handler handler;
+    SharedPreferences sharedPreferences;
 
     View root;
 
@@ -52,9 +55,8 @@ public class GalleryFragment extends Fragment  implements  Runnable{
 
         Log.i(TAG, "onCreateView: 草稿界面");
 
-        Bundle bundle = getActivity().getIntent().getExtras();
-        emailAddress = bundle.getString("email_address", "");
-        Log.i(TAG, "onCreateView: current emailAddress=" + emailAddress);
+        sharedPreferences = getActivity().getSharedPreferences("myemail", Activity.MODE_PRIVATE);
+        emailAddress = sharedPreferences.getString("email_address", "");
 
         listViewDRAFT = root.findViewById(R.id.listView_draft);
 

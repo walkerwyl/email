@@ -1,6 +1,8 @@
 package com.swufe.email.ui.slideshow;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.icu.text.RelativeDateTimeFormatter;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +41,7 @@ public class SlideshowFragment extends Fragment implements Runnable {
     ListView listViewSend;
     static Handler handler;
     SlideshowAdapter slideshowAdapter;
+    SharedPreferences sharedPreferences;
 
     private SlideshowViewModel slideshowViewModel;
 
@@ -52,9 +55,8 @@ public class SlideshowFragment extends Fragment implements Runnable {
         root = inflater.inflate(R.layout.fragment_slideshow, container, false);
 
 
-        Bundle bundle = getActivity().getIntent().getExtras();
-        emailAddress = bundle.getString("email_address", "");
-        Log.i(TAG, "onCreateView: current emailAddress" + emailAddress);
+        sharedPreferences = getActivity().getSharedPreferences("myemail", Activity.MODE_PRIVATE);
+        emailAddress = sharedPreferences.getString("email_address", "");
 
         listViewSend = root.findViewById(R.id.listView_send);
 
@@ -70,7 +72,7 @@ public class SlideshowFragment extends Fragment implements Runnable {
                             R.layout.list_item,
                             listData);
                     listViewSend.setAdapter(slideshowAdapter);
-                    listViewSend.setEmptyView(root.findViewById(R.id.nodraft));
+                    listViewSend.setEmptyView(root.findViewById(R.id.nosend));
                 }
             }
         };

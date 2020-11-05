@@ -56,17 +56,9 @@ public class LoadActivity extends AppCompatActivity {
 //                    Log.i(TAG, "handleMessage: 获得当前用户的邮件地址并发送到MainActivity" + emailAddress);
 //                    Intent intent = new Intent(LoadActivity.this, MainActivity.class);
             Log.i(TAG, "handleMessage: 获得当前用户的邮件地址并发送到ReceiveEmailActivity" + emailAddress);
-            if (!today.equals(updateTime)) {
-                Intent receiveEmailIntent = new Intent(LoadActivity.this, ReceiveEmailActivity.class);
-                receiveEmailIntent.putExtras(bundle);
-                startActivity(receiveEmailIntent);
-            } else {
-                Intent intent = new Intent(LoadActivity.this, MainActivity.class);
-                bundle = new Bundle();
-                bundle.putString("email_address", emailAddress);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
+            Intent receiveEmailIntent = new Intent(LoadActivity.this, ReceiveEmailActivity.class);
+            receiveEmailIntent.putExtras(bundle);
+            startActivity(receiveEmailIntent);
         } else {
 //                    初始化相关数据库和数据表
             Intent intent = new Intent(LoadActivity.this, InitialDatabaseActivity.class);
