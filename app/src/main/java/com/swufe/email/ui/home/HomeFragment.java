@@ -96,9 +96,9 @@ public class HomeFragment extends Fragment implements Runnable, AdapterView.OnIt
             map.put("ItemSubject", myMessage.getSubject());
             map.put("ItemDate", myMessage.getSentDate());
             map.put("ItemFrom", myMessage.getFrom());
-            Log.i(TAG, "run: ItemSubject=" + myMessage.getSubject());
-            Log.i(TAG, "run: ItemDate=" + myMessage.getSentDate());
-            Log.i(TAG, "run: ItemFrom=" + myMessage.getFrom());
+//            Log.i(TAG, "run: ItemSubject=" + myMessage.getSubject());
+//            Log.i(TAG, "run: ItemDate=" + myMessage.getSentDate());
+//            Log.i(TAG, "run: ItemFrom=" + myMessage.getFrom());
             listData.add(map);
         }
 

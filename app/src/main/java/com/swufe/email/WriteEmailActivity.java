@@ -74,6 +74,10 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
     ArrayList<String> filePathArrayList;//传递给发送邮件活动
     ArrayList<String> fileNameArrayList;//展示附件列表数据源
 
+    LocalDate date;
+    DateTimeFormatter formatter;
+
+
     // TODO: 20-10-28 使用下拉列表让用户选择自己的发送邮件的邮箱帐号
     @SuppressLint("HandlerLeak")
     @Override
@@ -85,6 +89,9 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
         bundle = intent.getExtras();
         emailAddress = bundle.getString("email_address", "");
         Log.i(TAG, "onCreate: 写邮件页面获得当前用户身份emailAddress=" + emailAddress);
+
+        date = LocalDate.now();
+        formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
 
         fileNameArrayList = new ArrayList<>();
         fileNameArrayList.add("附件");
@@ -131,17 +138,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View view) {
-        LocalDate date = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
         switch (view.getId()) {
-//            case R.id.btn_add_target_address:
-////                跳转到用户最近的通信地址,列表展示,需要新的活动返回数据startActivityForResult
-//                Bundle bundle = new Bundle();
-//                bundle.putString("email_address", "");
-//                Intent intent = new Intent(WriteEmailActivity.this, AddTargetAddressActivity.class);
-//                intent.putExtras(bundle);
-//                startActivityForResult(intent, 1);
-//                break;
             case R.id.btn_send:
 //                执行发送邮件的任务
 //                收集数据
@@ -193,32 +190,22 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                     break;
                 }
 
-//                假定必要部分不会缺失
-                // 草稿与其他不同, replyTo字段存储的是目标邮箱
-                MyMessage draft = new MyMessage();
-                draft.setStatus("1");
-                draft.setFrom(emailAddress);
-                draft.setSubject(emailSubject);
-                draft.setReplyTo(targetAddress);
-                draft.setSentDate(date.format(formatter));
-                draft.setContent(emailBody);
-                draft.save();
+                Intent saveDraftIntent = new Intent(WriteEmailActivity.this, EmptyActivity.class);
+                Bundle saveDraftBundle = new Bundle();
 
-                Log.i(TAG, "onClick: draft from=" + emailAddress);
-                Log.i(TAG, "onClick: draft subject=" + emailSubject);
-                Log.i(TAG, "onClick: draft body=" + emailBody);
+                saveDraftBundle.putString("option", "save_draft");
+                saveDraftBundle.putString("email_address", emailAddress);
+                saveDraftBundle.putString("email_subject", emailSubject);
+                saveDraftBundle.putString("target_address", targetAddress);
+                saveDraftBundle.putString("email_body", emailBody);
+                saveDraftBundle.putString("send_date", date.format(formatter));
 
-                Toast.makeText(WriteEmailActivity.this, "草稿已保存", Toast.LENGTH_SHORT).show();
-                Log.i(TAG, "onClick: 草稿保存成功, 返回主页面");
+                saveDraftIntent.putExtras(saveDraftBundle);
+                startActivity(saveDraftIntent);
 
-//                intent = new Intent(WriteEmailActivity.this, MainActivity.class);
-//                startActivity(intent);
                 break;
             case R.id.btn_back:
                 intent = new Intent(WriteEmailActivity.this, MainActivity.class);
-                bundle = new Bundle();
-                bundle.putString("email_address", emailAddress);
-                intent.putExtras(bundle);
                 startActivity(intent);
                 break;
             default:
