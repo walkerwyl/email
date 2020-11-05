@@ -14,19 +14,28 @@ import com.sun.mail.pop3.POP3Folder;
 import com.swufe.email.data.Account;
 import com.swufe.email.data.MyMessage;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Whitelist;
 import org.litepal.LitePal;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.mail.Address;
+import javax.mail.BodyPart;
 import javax.mail.FetchProfile;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
@@ -83,7 +92,7 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
         Log.i(TAG, "run: accounts size = " + accounts.size());
         Account account = accounts.get(0);
 
-        Log.i(TAG, "Receive: account emailAddress=" + account.getEmailAddress() );
+        Log.i(TAG, "Receive: account emailAddress=" + account.getEmailAddress());
         Log.i(TAG, "Receive: account emailPassword=" + account.getEmailPassword());
         Log.i(TAG, "Receive: account status=" + account.getStatus());
         Log.i(TAG, "Receive: account POP3HOST=" + account.getPOP3HOST());
@@ -103,7 +112,7 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
             // 连接pop.sina.com邮件服务器 //
             store.connect(account.getPOP3HOST(), emailAddress, account.getEmailPassword()); // 返回文件夹对象
             Log.i(TAG, "run: 链接pop服务器");
-            
+
 
             POP3Folder folder = (POP3Folder) store.getFolder("INBOX");
             folder.open(Folder.READ_ONLY); // 获取信息
@@ -111,7 +120,7 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
             profile.add(UIDFolder.FetchProfileItem.UID);
             profile.add(FetchProfile.Item.ENVELOPE);
             Message[] messages = folder.getMessages();
-            Log.i(TAG, "run: 查看messages大小"+ messages.length);
+            Log.i(TAG, "run: 查看messages大小" + messages.length);
             for (Message message : messages) {
 //                对于官方邮件本身的信息进行进一步的挖掘
 //                查找需要的部分存储在数据库中, 每次链减进行检查, 当messages的大小发生变化时
@@ -123,14 +132,14 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
                 //                在本地数据库中查询此UID,若存在则不保存,只保存本地没有的邮件
                 //            从本地获得已读取的邮件信息
 
-                List<MyMessage> storeMessages =  LitePal.where("uid = ?", folder.getUID(message))
+                List<MyMessage> storeMessages = LitePal.where("uid = ?", folder.getUID(message))
                         .limit(1)
                         .find(MyMessage.class);
                 if (storeMessages.size() == 1) {
                     Log.i(TAG, "run: 此邮件已存在");
                     continue;
                 }
-                
+
                 myMessage.setStatus("0");
                 myMessage.setSubject(message.getSubject());
 
@@ -139,21 +148,69 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
                     Log.i(TAG, "run: getFrom=" + item);
                     Log.i(TAG, "run: getFrom Address=" + matchMail(item + ""));
                     if (validMail(item.toString())) myMessage.setFrom(item.toString());
-                    else if (validMail(matchMail(item.toString()))) myMessage.setFrom(matchMail(item.toString()));
+                    else if (validMail(matchMail(item.toString())))
+                        myMessage.setFrom(matchMail(item.toString()));
                 }
                 myMessage.setSentDate(message.getSentDate() + "");
                 myMessage.setContentType(message.getContentType());
-                myMessage.setContent(message.getContent().toString());
+                String contentType = message.getContentType();
+                Log.i(TAG, "run: contentType=" + contentType);
+
+                // 得到邮件的Multipart（内容总部件--【包涵附件】）
+//                Multipart multipart = (Multipart) message.getContent();
+                String text = "";
+                switch (contentType.split(";")[0]) {
+                    case "multipart/alternative":
+                        String html = "";
+                        Multipart m = (Multipart) message.getContent();
+                        for (int k=0; k<m.getCount(); k++) {
+                            if(m.getBodyPart(k).getContentType().startsWith("text/plain")) {
+                                // 处理文本正文
+                                text += m.getBodyPart(k).getContent().toString().trim()+"\n";
+//                                Log.i(TAG, "multipart/alternative TEXT文本内容："+"\n" + m.getBodyPart(k).getContent().toString().trim()+"\n");
+                            } else {
+                                // 处理 HTML 正文
+                                html +=  m.getBodyPart(k).getContent()+"\n";
+//                                Log.i(TAG, "multipart/alternative HTML文本内容："+"\n" + m.getBodyPart(k).getContent()+"\n");
+                            }
+                        }
+                        text += html2text(html);
+                        Log.i(TAG, "run: text = " + text);
+                        break;
+                    case "text/plain":
+                        Log.i(TAG, "TEXT文本内容："+"\n" + message.getContent().toString().trim()+"\n");
+                        text = message.getContent().toString().trim()+"\n";
+                        break;
+                    case "text/html":
+                        Log.i(TAG, "HTML文本内容："+"\n" + message.getContent()+"\n");
+                        text = html2text(message.getContent().toString());
+                        break;
+                    case "multipart/related":
+//                        Log.i(TAG, "run: " + "内嵌资源");
+                        break;
+                    case "application/":
+//                        应用附件
+//                        Log.i(TAG, "run: " + "应用文件");
+                        break;
+                    case "image/":
+//                        Log.i(TAG, "run: " + "图片文件");
+                        break;
+                }
+
+                //                获得确切的内容
+                myMessage.setContent(text);
+
                 myMessage.setMessageNumber(message.getMessageNumber());
-                Log.i(TAG, "run: getSentDate=" + message.getSentDate());
-                Log.i(TAG, "run: getContentType=" + message.getContentType());
-                Log.i(TAG, "run: getContent=" + message.getContent());
-                Log.i(TAG, "run: getMesseageNumber=" + message.getMessageNumber());
+//                Log.i(TAG, "run: getSentDate=" + message.getSentDate());
+                Log.i(TAG, "run: contentType=" + message.getContentType());
+//                Log.i(TAG, "run: getContent=" + message.getContent());
+//                Log.i(TAG, "run: getMesseageNumber=" + message.getMessageNumber());
                 for (Address item : message.getReplyTo()) {
-                    Log.i(TAG, "run: getReplyTo=" + item);
-                    Log.i(TAG, "run: getReplyTo Address=" + matchMail(item + ""));
+//                    Log.i(TAG, "run: getReplyTo=" + item);
+//                    Log.i(TAG, "run: getReplyTo Address=" + matchMail(item + ""));
                     if (validMail(item.toString())) myMessage.setReplyTo(item.toString());
-                    else if (validMail(matchMail(item.toString()))) myMessage.setReplyTo(matchMail(item.toString()));
+                    else if (validMail(matchMail(item.toString())))
+                        myMessage.setReplyTo(matchMail(item.toString()));
                 }
                 Log.i(TAG, "run: ---------------------------------------------------------------");
 
@@ -161,9 +218,9 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
 //                接受数据时同时对数据进行存储
 //                如何避免重复插入相同的数据
             }
-            
 
-            folder.close(false);
+
+        folder.close(false);
             store.close();
         } catch (NoSuchProviderException e) {
             e.printStackTrace();
@@ -179,7 +236,26 @@ public class ReceiveEmailActivity extends AppCompatActivity implements Runnable{
         msg.obj = emailAddress;
         handler.sendMessage(msg);
 
+    }
 
+
+    public String html2text(String html)
+    {
+        if (StringUtils.isEmpty(html))
+        {
+            return "";
+        }
+
+        Document document = Jsoup.parse(html);
+        Document.OutputSettings outputSettings = new Document.OutputSettings().prettyPrint(false);
+        document.outputSettings(outputSettings);
+        document.select("br").append("\\n");
+        document.select("p").prepend("\\n");
+        document.select("p").append("\\n");
+        String newHtml = document.html().replaceAll("\\\\n", "\n");
+        String plainText = Jsoup.clean(newHtml, "", Whitelist.none(), outputSettings);
+        String result = StringEscapeUtils.unescapeHtml4(plainText.trim());
+        return result;
     }
 
     private String matchMail(String source) {

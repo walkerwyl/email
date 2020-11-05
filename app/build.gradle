@@ -33,6 +33,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'com.sun.mail:android-mail:1.6.2'
     implementation 'com.sun.mail:android-activation:1.6.2'
+//    Jsoup解析html
+    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'org.apache.commons:commons-lang3:3.8.1'
 //    LitePal数据库模块
     implementation 'org.litepal.guolindev:core:3.2.1'
     testImplementation 'junit:junit:4.12'
