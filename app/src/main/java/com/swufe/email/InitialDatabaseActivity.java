@@ -75,14 +75,14 @@ public class InitialDatabaseActivity extends AppCompatActivity implements Runnab
         config.save();
         Log.i(TAG, "run: 163.com 配置完成");
 
-//        config = new Config();
-//        config.setNAME("qq.com");
-//        config.setPOP3HOST("smtp.qq.com");
-//        config.setPOP3PORT(465);
-//        config.setSMTPHOST("pop.qq.com");
-//        config.setSMTPPORT(110);
-//        config.save();
-//        Log.i(TAG, "run: qq.com 配置完成");
+        config = new Config();
+        config.setNAME("qq.com");
+        config.setPOP3HOST("smtp.qq.com");
+        config.setPOP3PORT(465);
+        config.setSMTPHOST("pop.qq.com");
+        config.setSMTPPORT(110);
+        config.save();
+        Log.i(TAG, "run: qq.com 配置完成");
 
 //        测试使用的帐号
 //        Accont表的数据插入

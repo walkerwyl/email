@@ -54,9 +54,9 @@ public class ManagerActivity extends AppCompatActivity implements Runnable{
             @Override
             public void handleMessage(@NonNull Message msg) {
                 if (msg.what == 4 ) {
-//                    intent = new Intent(ManagerActivity.this, MainActivity.class);
-//                    intent.putExtras(bundle);
-//                    startActivity(intent);
+                    intent = new Intent(ManagerActivity.this, MainActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
 
                 } else if (msg.what == 5) {
                     textView.setText("草稿保存成功");
